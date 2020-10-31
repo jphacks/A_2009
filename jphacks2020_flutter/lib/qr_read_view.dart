@@ -5,6 +5,7 @@ import 'package:jphacks2020/scan_item.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'history_db.dart';
+import 'history_view.dart';
 
 class QrReadView extends StatefulWidget {
   const QrReadView({Key key}) : super(key: key);
@@ -23,6 +24,7 @@ class _QrReadViewState extends State<QrReadView> {
       setState(() {
         readData = code.rawContent;
         _insertScanItem(code.rawContent);
+        _moveToHistoryView(context);
       });
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.cameraAccessDenied) {
@@ -38,6 +40,10 @@ class _QrReadViewState extends State<QrReadView> {
       setState(() => readData = '不明なエラー: $e');
     }
   }
+
+  Future _moveToHistoryView(BuildContext context) =>
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => HistoryView()));
 
   @override
   void initState() {

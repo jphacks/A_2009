@@ -16,31 +16,64 @@ class FirstView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                primary: Colors.blue,
-                onPrimary: Colors.black,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 20),
+              child: Text(
+                'EEL',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 150,
+                  color: Theme.of(context).primaryColor,
                 ),
               ),
-              child: const Text('カメラで追加'),
-              onPressed: () {
-                _moveToQrReadView(context);
-              },
             ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                primary: Colors.blue,
-                onPrimary: Colors.black,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  minimumSize: const Size(200, 100),
+                  primary: Colors.blue,
+                  onPrimary: Colors.black,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(50),
+                  ),
                 ),
+                child: const Text(
+                  'QRコードリーダー起動',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                    color: Colors.black,
+                  ),
+                ),
+                onPressed: () {
+                  _moveToQrReadView(context);
+                },
               ),
-              child: const Text('履歴'),
-              onPressed: () {
-                _moveToHistoryView(context);
-              },
+            ),
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  minimumSize: const Size(200, 100),
+                  primary: Colors.blue,
+                  onPrimary: Colors.black,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                ),
+                child: const Text(
+                  '履歴',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                    color: Colors.black,
+                  ),
+                ),
+                onPressed: () {
+                  _moveToHistoryView(context);
+                },
+              ),
             ),
           ],
         ),
@@ -48,11 +81,9 @@ class FirstView extends StatelessWidget {
     );
   }
 
-  Future _moveToQrReadView(BuildContext context) =>
-      Navigator.push(context,
-          MaterialPageRoute<void>(builder: (context) => const QrReadView()));
+  Future _moveToQrReadView(BuildContext context) => Navigator.push(context,
+      MaterialPageRoute<void>(builder: (context) => const QrReadView()));
 
-  Future _moveToHistoryView(BuildContext context) =>
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => HistoryView()));
+  Future _moveToHistoryView(BuildContext context) => Navigator.push(
+      context, MaterialPageRoute(builder: (context) => HistoryView()));
 }
