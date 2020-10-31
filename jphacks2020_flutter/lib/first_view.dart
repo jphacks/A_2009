@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:jphacks2020/qr_read_view.dart';
+import 'package:jphacks2020/second_view.dart';
 
 import 'history_view.dart';
 
@@ -42,6 +43,19 @@ class FirstView extends StatelessWidget {
                 _moveToHistoryView(context);
               },
             ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Colors.blue,
+                onPrimary: Colors.black,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              child: const Text('履歴'),
+              onPressed: () {
+                _moveToSecondView(context);
+              },
+            ),
           ],
         ),
       ),
@@ -55,4 +69,8 @@ class FirstView extends StatelessWidget {
   Future _moveToHistoryView(BuildContext context) =>
       Navigator.push(context,
           MaterialPageRoute(builder: (context) => HistoryView()));
+
+  Future _moveToSecondView(BuildContext context) =>
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => SecondView()));
 }

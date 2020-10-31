@@ -5,7 +5,6 @@ import 'package:flutter_plugin_pdf_viewer/flutter_plugin_pdf_viewer.dart';
 class SecondView extends StatefulWidget {
   const SecondView({Key key, this.title}) : super(key: key);
 
-
   final String title;
 
   @override
@@ -13,7 +12,7 @@ class SecondView extends StatefulWidget {
 }
 
 class _SecondViewState extends State<SecondView> {
-  bool _isLoading=false,_isInit=true;
+  bool _isLoading = false, _isInit = true;
   PDFDocument _document;
 
   @override
@@ -22,7 +21,7 @@ class _SecondViewState extends State<SecondView> {
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
-          onPressed: (){
+          onPressed: () {
             //return first view
           },
         ),
@@ -32,7 +31,7 @@ class _SecondViewState extends State<SecondView> {
             width: 60,
             child: FlatButton(
               child: const Icon(Icons.thumb_up),
-              onPressed: (){
+              onPressed: () {
                 _loadFromAssets();
               },
             ),
@@ -40,7 +39,6 @@ class _SecondViewState extends State<SecondView> {
         ],
       ),
       body: Container(
-
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -49,13 +47,8 @@ class _SecondViewState extends State<SecondView> {
                   child: _isInit
                       ? const Text('please load PDF')
                       : _isLoading
-                      ? const Center(
-                    child: CircularProgressIndicator(),
-                  )
-                      :PDFViewer(
-                    document: _document,
-                  )
-              ),
+                          ? const Center(child: CircularProgressIndicator())
+                          : PDFViewer(document: _document)),
             )
           ],
         ),
@@ -65,15 +58,16 @@ class _SecondViewState extends State<SecondView> {
     );
   }
 
-  Future _loadFromAssets() async{
+  Future _loadFromAssets() async {
     setState(() {
-      _isInit=false;
-      _isLoading=true;
+      _isInit = false;
+      _isLoading = true;
     });
-    final document=await PDFDocument.fromAsset('assets/test.pdf');
+
+    final document = await PDFDocument.fromAsset('assets/sample.pdf');
     setState(() {
-      _document=document;
-      _isLoading=false;
+      _document = document;
+      _isLoading = false;
     });
   }
 }
