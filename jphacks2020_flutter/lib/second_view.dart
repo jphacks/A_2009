@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_plugin_pdf_viewer/flutter_plugin_pdf_viewer.dart';
 
 class SecondView extends StatefulWidget {
-  SecondView({Key key, this.title}) : super(key: key);
+  const SecondView({Key key, this.title}) : super(key: key);
 
 
   final String title;
@@ -21,17 +21,17 @@ class _SecondViewState extends State<SecondView> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios),
+          icon: const Icon(Icons.arrow_back_ios),
           onPressed: (){
             //return first view
           },
         ),
-        title: Text("JPHacks2020"),
+        title: const Text('JPHacks2020'),
         actions: <Widget>[
           SizedBox(
             width: 60,
             child: FlatButton(
-              child: Icon(Icons.thumb_up),
+              child: const Icon(Icons.thumb_up),
               onPressed: (){
                 _loadFromAssets();
               },
@@ -47,9 +47,9 @@ class _SecondViewState extends State<SecondView> {
             Expanded(
               child: Center(
                   child: _isInit
-                      ? Text("please load PDF")
+                      ? const Text('please load PDF')
                       : _isLoading
-                      ? Center(
+                      ? const Center(
                     child: CircularProgressIndicator(),
                   )
                       :PDFViewer(
