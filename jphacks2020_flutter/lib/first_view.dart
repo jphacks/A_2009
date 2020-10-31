@@ -8,9 +8,6 @@ class FirstView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Main'),
-      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -39,10 +36,10 @@ class FirstView extends StatelessWidget {
                   ),
                 ),
                 child: const Text(
-                  'QRコードリーダー起動',
+                  'QRリーダー',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 20,
+                    fontSize: 25,
                     color: Colors.black,
                   ),
                 ),
@@ -66,7 +63,7 @@ class FirstView extends StatelessWidget {
                   '履歴',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 20,
+                    fontSize: 25,
                     color: Colors.black,
                   ),
                 ),
