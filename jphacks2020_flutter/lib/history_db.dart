@@ -4,13 +4,16 @@ import 'dart:io';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
+String dbName = 'slide_history.db';
+String tableName = 'slide_history';
+
 // return the path
 Future<String> getDatabaseFilePath(String dbName) async {
   final documentsDirectory = await getApplicationDocumentsDirectory();
   print(documentsDirectory);
 
   final path = join(documentsDirectory.path, dbName);
-  if (await new Directory(dirname(path)).exists()) {
+  if (new Directory(dirname(path)).existsSync()) {
     return path;
   }
 

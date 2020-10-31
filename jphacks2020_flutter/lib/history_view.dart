@@ -21,10 +21,10 @@ class HistoryViewState extends State<HistoryView> {
   }
 
   Future _initDatabase() async {
-    final path = await getDatabaseFilePath('scan_history.db');
+    final path = await getDatabaseFilePath(dbName);
     final db = await openReadOnlyDatabase(path);
 
-    final List<Map> data = await db.query('slide_history', columns: ['text']);
+    final List<Map> data = await db.query(tableName, columns: ['text']);
 
     final items = <ScanItem>[];
 
