@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:jphacks2020/qr_read_view.dart';
 
+import 'history_view.dart';
+
 class FirstView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -37,7 +39,7 @@ class FirstView extends StatelessWidget {
               ),
               child: const Text('履歴'),
               onPressed: () {
-                // _getImageFromDevice(ImageSource.gallery);
+                _moveToHistoryView(context);
               },
             ),
           ],
@@ -46,6 +48,11 @@ class FirstView extends StatelessWidget {
     );
   }
 
-  Future _moveToQrReadView(BuildContext context) => Navigator.push(context,
-      MaterialPageRoute<void>(builder: (context) => const QrReadView()));
+  Future _moveToQrReadView(BuildContext context) =>
+      Navigator.push(context,
+          MaterialPageRoute<void>(builder: (context) => const QrReadView()));
+
+  Future _moveToHistoryView(BuildContext context) =>
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => HistoryView()));
 }

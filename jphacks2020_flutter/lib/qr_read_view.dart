@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/services.dart';
+import 'package:jphacks2020/scan_item.dart';
+import 'package:sqflite/sqflite.dart';
 
+import 'history_db.dart';
 
 class QrReadView extends StatefulWidget {
   const QrReadView({Key key}) : super(key: key);
@@ -23,7 +26,10 @@ class _QrReadViewState extends State<QrReadView> {
       final code = await BarcodeScanner.scan();
 
       // readDataに読み取ったデータを格納する
-      setState(() => readData = code.rawContent);
+      setState(() {
+        readData = code.rawContent;
+        _insertScanItem(readData);
+      });
     }
     // 例外処理：プラグインが何らかのエラーを出したとき
     on PlatformException catch (e) {
@@ -85,5 +91,22 @@ class _QrReadViewState extends State<QrReadView> {
         ),
       ),
     );
+  }
+
+  Future _insertScanItem(String code) async {
+    final path = await getDatabaseFilePath('scan_history.db');
+    final db = await openDatabase(path, version: 1,
+        onCreate: (Database db, int version) async {
+      await db.execute(
+          'CREATE TABLE scan_history (id INTEGER PRIMARY KEY, text TEXT)');
+    });
+
+    await db.transaction((t) async {
+      final i =
+          await t.insert('scan_history', ScanItem.fromQR(code).toMap());
+      print(i);
+    });
+
+    db.close();
   }
 }
