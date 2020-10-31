@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:jphacks2020/qr_read_view.dart';
+
+import 'first_view.dart';
 
 void main() => runApp(MyApp());
 
@@ -11,7 +12,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MainView(),
+      home: FirstView(),
     );
   }
 }
