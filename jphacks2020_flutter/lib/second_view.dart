@@ -16,6 +16,12 @@ class _SecondViewState extends State<SecondView> {
   PDFDocument _document;
 
   @override
+  void initState() {
+    super.initState();
+    _loadFromAssets();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -42,14 +48,16 @@ class _SecondViewState extends State<SecondView> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Expanded(
+            Container(
+              height: 400,
               child: Center(
                   child: _isInit
                       ? const Text('please load PDF')
                       : _isLoading
                           ? const Center(child: CircularProgressIndicator())
                           : PDFViewer(document: _document)),
-            )
+            ),
+            const Text('data')
           ],
         ),
       ),

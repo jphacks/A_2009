@@ -90,6 +90,6 @@ class _QrReadViewState extends State<QrReadView> {
       print(i);
     });
 
-    db.close();
+    await db.close();
   }
 }
