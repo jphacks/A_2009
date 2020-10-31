@@ -32,6 +32,7 @@ dependencies:
   barcode_scan: ^3.0.1
 
 dev_dependencies:
+  pedantic_mono: any
   flutter_test:
     sdk: flutter
 
