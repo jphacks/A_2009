@@ -14,6 +14,9 @@ class SecondView extends StatefulWidget {
 class _SecondViewState extends State<SecondView> {
   bool _isLoading = false, _isInit = true;
   PDFDocument _document;
+  final items = List<String>.generate(5, (i) => "comment $i");
+
+  final myContoller = TextEditingController();
 
   @override
   void initState() {
@@ -28,7 +31,7 @@ class _SecondViewState extends State<SecondView> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
           onPressed: () {
-            //return first view
+            Navigator.pop(context);
           },
         ),
         title: const Text('JPHacks2020'),
@@ -36,32 +39,89 @@ class _SecondViewState extends State<SecondView> {
           SizedBox(
             width: 60,
             child: FlatButton(
-              child: const Icon(Icons.thumb_up),
+              child: const Icon(Icons.refresh),
               onPressed: () {
                 _loadFromAssets();
               },
             ),
-          )
+          ),
+          SizedBox(
+            width: 60,
+            child: FlatButton(
+              child: Icon(Icons.thumb_up),
+              onPressed: () {
+                //全体の感想を入力できる枠が出てくる
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      content: TextField(
+                        controller: myContoller,
+                        decoration: InputDecoration(
+                          hintText: "コメントや質問を入力してね",
+                          suffixIcon: IconButton(
+                            icon: const Icon(Icons.send),
+                            onPressed: () {
+                              print(myContoller.text);
+                            },
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+          ),
         ],
       ),
       body: Container(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            Container(
-              height: 400,
+            Container(height: 400,
               child: Center(
                   child: _isInit
                       ? const Text('please load PDF')
                       : _isLoading
-                          ? const Center(child: CircularProgressIndicator())
-                          : PDFViewer(document: _document)),
+                      ? const Center(child: CircularProgressIndicator())
+                      : PDFViewer(document: _document)),
             ),
-            const Text('data')
+            Container(
+              child: TextField(
+                controller: myContoller,
+                decoration: InputDecoration(
+                    hintText: "コメントや質問を入力してね",
+                    suffixIcon: IconButton(
+                      icon: const Icon(Icons.send),
+                      onPressed: () {
+                        print(myContoller.text);
+                      },
+                    ),
+                ),
+              ),
+            ),
+            Expanded(
+                child: ListView.separated(
+                  itemCount: items.length,
+                  separatorBuilder: (BuildContext context, int index) => Divider(color: Colors.black,),
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      tileColor: Colors.white,
+                      title: Text(items[index]),
+                      trailing: FlatButton(
+                        child: Icon(Icons.thumb_up),
+                        onPressed: () {
+                          //感想に+1がつく
+                        },
+                      ),
+                    );
+                  },
+                ),
+            )
           ],
         ),
       ),
-
       // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
