@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:jphacks2020/history_db.dart';
-import 'package:jphacks2020/scan_item.dart';
+import 'package:jphacks2020/db/history_db.dart';
+import 'package:jphacks2020/model/scan_item.dart';
 import 'package:sqflite/sqflite.dart';
 
 class HistoryView extends StatefulWidget {

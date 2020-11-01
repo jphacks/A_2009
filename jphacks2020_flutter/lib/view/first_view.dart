@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:jphacks2020/qr_read_view.dart';
+import 'package:jphacks2020/view/qr_read_view.dart';
 
 import 'history_view.dart';
 

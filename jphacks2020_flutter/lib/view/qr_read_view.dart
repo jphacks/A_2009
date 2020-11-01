@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/services.dart';
-import 'package:jphacks2020/scan_item.dart';
+import 'package:jphacks2020/model/scan_item.dart';
 import 'package:sqflite/sqflite.dart';
 
-import 'history_db.dart';
+import '../db/history_db.dart';
 import 'history_view.dart';
 
 class QrReadView extends StatefulWidget {
