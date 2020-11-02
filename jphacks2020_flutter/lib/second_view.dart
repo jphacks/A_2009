@@ -55,17 +55,79 @@ class _SecondViewState extends State<SecondView> {
                   context: context,
                   builder: (context) {
                     return AlertDialog(
-                      content: TextField(
-                        controller: myContoller,
-                        decoration: InputDecoration(
-                          hintText: "コメントや質問を入力してね",
-                          suffixIcon: IconButton(
-                            icon: const Icon(Icons.send),
-                            onPressed: () {
-                              print(myContoller.text);
-                            },
+                      title: const Text("全体を通しての感想を教えてね"),
+
+                      content: Column(
+                        children: [
+                          SizedBox(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text("もっと聞きたい"),
+                                FlatButton(
+                                  child: const Icon(Icons.favorite),
+                                  onPressed: () {
+                                    //感想をサーバーに送る
+                                  },
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
+                          SizedBox(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text("とても参考になった"),
+                                FlatButton(
+                                  child: const Icon(Icons.favorite),
+                                  onPressed: () {
+                                    //感想をサーバーに送る
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text("面白かった"),
+                                FlatButton(
+                                  child: const Icon(Icons.favorite),
+                                  onPressed: () {
+                                    //感想をサーバーに送る
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text("愛している"),
+                                FlatButton(
+                                  child: const Icon(Icons.favorite),
+                                  onPressed: () {
+                                    //感想をサーバーに送る
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                          TextField(
+                            controller: myContoller,
+                            decoration: InputDecoration(
+                              hintText: "コメントや質問を入力してね",
+                              suffixIcon: IconButton(
+                                icon: const Icon(Icons.send),
+                                onPressed: () {
+                                  print(myContoller.text);
+                                },
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     );
                   },
@@ -109,11 +171,13 @@ class _SecondViewState extends State<SecondView> {
                     return ListTile(
                       tileColor: Colors.white,
                       title: Text(items[index]),
-                      trailing: FlatButton(
-                        child: Icon(Icons.thumb_up),
-                        onPressed: () {
-                          //感想に+1がつく
-                        },
+                      trailing: Container(
+                        child: FlatButton(
+                          child: Icon(Icons.thumb_up),
+                          onPressed: () {
+                            //感想に+1がつく
+                          },
+                        ),
                       ),
                     );
                   },
