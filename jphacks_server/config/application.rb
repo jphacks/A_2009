@@ -15,12 +15,15 @@ require "sprockets/railtie"
 
 Bundler.require(*Rails.groups)
 
-module JphacksServer
+module Vele
   class Application < Rails::Application
-    # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 6.0
     config.time_zone = ENV["TZ"]
-
+    config.active_record.default_timezone = :local
+    config.i18n.default_locale = :ja
+    config.i18n.load_path += Dir[Rails.root.join("config", "locales", "*.yml").to_s]
+    config.i18n.load_path += Dir[Rails.root.join("config", "locales", "**", "*.yml").to_s]
+    config.generators.template_engine = :slim
     config.generators.system_tests = nil
   end
 end

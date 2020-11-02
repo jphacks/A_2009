@@ -1,0 +1,25 @@
+p#notice
+  = notice
+p
+  strong
+    | Uuid:
+  = @material.uuid
+p
+  strong
+    | Url:
+  = @material.url
+p
+  strong
+    | Author:
+  = @material.author
+p
+  strong
+    | Password digest:
+  = @material.password_digest
+p
+  strong
+    | Title:
+  = @material.title
+= link_to 'Edit', edit_material_path(@material)
+|  | 
+= link_to 'Back', materials_path
