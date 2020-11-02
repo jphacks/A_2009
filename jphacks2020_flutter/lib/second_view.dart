@@ -51,7 +51,7 @@ class _SecondViewState extends State<SecondView> {
               child: Icon(Icons.thumb_up),
               onPressed: () {
                 //全体の感想を入力できる枠が出てくる
-                showDialog(
+                showDialog <AlertDialog>(
                   context: context,
                   builder: (context) {
                     return AlertDialog(
