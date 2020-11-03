@@ -45,9 +45,37 @@ class HistoryViewState extends State<HistoryView> {
           title: const Text('Scanner History'),
         ),
         body: ListView.builder(
-            itemCount: _items.length,
+            itemCount: 3,
             itemBuilder: (context, index) {
-              return ListTile(title: Text('${_items[index].text}'));
+              return Card(
+                  child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  ListTile(
+                    title: Text(
+                      'title',
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        '{_items[index].text}',
+                        style: TextStyle(fontSize: 20),
+                        textAlign: TextAlign.left,
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        '{testtest}',
+                        style: TextStyle(fontSize: 20),
+                      ),
+                    ],
+                  ),
+                ],
+              ));
             }));
   }
 }

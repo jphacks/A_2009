@@ -17,7 +17,7 @@ class QrReadView extends StatefulWidget {
 class _QrReadViewState extends State<QrReadView> {
   String readData = '';
 
-  Future scan() async {
+  Future _scan() async {
     try {
       final code = await BarcodeScanner.scan();
 
@@ -48,7 +48,7 @@ class _QrReadViewState extends State<QrReadView> {
   @override
   void initState() {
     super.initState();
-    scan();
+    _scan();
   }
 
   @override
@@ -75,7 +75,7 @@ class _QrReadViewState extends State<QrReadView> {
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
-              onPressed: scan,
+              onPressed: _scan,
             ),
           ],
         ),
