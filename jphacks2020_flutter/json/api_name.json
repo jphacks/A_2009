@@ -1,0 +1,42 @@
+{
+  "count": 5,
+  "address": "Fukuoka",
+  "main": null,
+  "categorydata": [
+    {
+      "kapibara_id": "100",
+      "kapibara_Name": "カピバラさん",
+      "kapibara_Old": 10
+    },
+    {
+      "kapibara_id": "101",
+      "kapibara_Name": "ホワイトさん",
+      "kapibara_Old": 20
+    },
+    {
+      "kapibara_id": "102",
+      "kapibara_Name": "仔カピバラさん",
+      "kapibara_Old": 30
+    },
+    {
+      "kapibara_id": "103",
+      "kapibara_Name": "ひだまりさん",
+      "kapibara_Old": 40
+    },
+    {
+      "kapibara_id": "104",
+      "kapibara_Name": "仔カピ兄",
+      "kapibara_Old": 50
+    },
+    {
+      "kapibara_id": "105",
+      "kapibara_Name": "カピバラ105",
+      "kapibara_Old": 60
+    },
+    {
+      "kapibara_id": "106",
+      "kapibara_Name": "カピバラ106",
+      "kapibara_Old": 70
+    }
+  ]
+}
