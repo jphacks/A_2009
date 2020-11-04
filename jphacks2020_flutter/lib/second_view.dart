@@ -1,6 +1,11 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_plugin_pdf_viewer/flutter_plugin_pdf_viewer.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_pdfview/flutter_pdfview.dart';
+import 'package:path_provider/path_provider.dart';
 
 class SecondView extends StatefulWidget {
   const SecondView({Key key, this.title}) : super(key: key);
@@ -13,10 +18,11 @@ class SecondView extends StatefulWidget {
 
 class _SecondViewState extends State<SecondView> {
   bool _isLoading = false, _isInit = true;
-  PDFDocument _document;
-  final items = List<String>.generate(5, (i) => "comment $i");
+  String _document;
+  final items = List<String>.generate(5, (i) => 'comment $i');
 
-  final myContoller = TextEditingController();
+  final commentController = TextEditingController();
+  final minuteController = TextEditingController();
 
   @override
   void initState() {
@@ -48,88 +54,13 @@ class _SecondViewState extends State<SecondView> {
           SizedBox(
             width: 60,
             child: FlatButton(
-              child: Icon(Icons.thumb_up),
+              child: const Icon(Icons.thumb_up),
               onPressed: () {
                 //全体の感想を入力できる枠が出てくる
-                showDialog <AlertDialog>(
+                showDialog<AlertDialog>(
                   context: context,
                   builder: (context) {
-                    return AlertDialog(
-                      title: const Text("全体を通しての感想を教えてね"),
-
-                      content: Column(
-                        children: [
-                          SizedBox(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text("もっと聞きたい"),
-                                FlatButton(
-                                  child: const Icon(Icons.favorite),
-                                  onPressed: () {
-                                    //感想をサーバーに送る
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text("とても参考になった"),
-                                FlatButton(
-                                  child: const Icon(Icons.favorite),
-                                  onPressed: () {
-                                    //感想をサーバーに送る
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text("面白かった"),
-                                FlatButton(
-                                  child: const Icon(Icons.favorite),
-                                  onPressed: () {
-                                    //感想をサーバーに送る
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text("愛している"),
-                                FlatButton(
-                                  child: const Icon(Icons.favorite),
-                                  onPressed: () {
-                                    //感想をサーバーに送る
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                          TextField(
-                            controller: myContoller,
-                            decoration: InputDecoration(
-                              hintText: "コメントや質問を入力してね",
-                              suffixIcon: IconButton(
-                                icon: const Icon(Icons.send),
-                                onPressed: () {
-                                  print(myContoller.text);
-                                },
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
+                    return _alertDialog();
                   },
                 );
               },
@@ -137,53 +68,65 @@ class _SecondViewState extends State<SecondView> {
           ),
         ],
       ),
-      body: Container(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Container(height: 400,
-              child: Center(
-                  child: _isInit
-                      ? const Text('please load PDF')
-                      : _isLoading
-                      ? const Center(child: CircularProgressIndicator())
-                      : PDFViewer(document: _document)),
-            ),
-            Container(
-              child: TextField(
-                controller: myContoller,
-                decoration: InputDecoration(
-                    hintText: "コメントや質問を入力してね",
-                    suffixIcon: IconButton(
-                      icon: const Icon(Icons.send),
-                      onPressed: () {
-                        print(myContoller.text);
-                      },
-                    ),
-                ),
-              ),
-            ),
-            Expanded(
-                child: ListView.separated(
-                  itemCount: items.length,
-                  separatorBuilder: (BuildContext context, int index) => Divider(color: Colors.black,),
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      tileColor: Colors.white,
-                      title: Text(items[index]),
-                      trailing: Container(
-                        child: FlatButton(
-                          child: Icon(Icons.thumb_up),
-                          onPressed: () {
-                            //感想に+1がつく
-                          },
-                        ),
+      body: SafeArea(
+        child: LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
+            return GestureDetector(
+              onTap: () => FocusScope.of(context).unfocus(),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                      physics: const NeverScrollableScrollPhysics(),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          SizedBox(
+                            height: (constraints.maxHeight - 50) / 2,
+                            child: Center(
+                                child: _isInit
+                                    ? const Text('please load PDF')
+                                    : _isLoading
+                                        ? const Center(
+                                            child: CircularProgressIndicator())
+                                        : PDFView(
+                                            filePath: _document,
+                                            swipeHorizontal: true)),
+                          ),
+                          SizedBox(
+                            height: (constraints.maxHeight - 50) / 2,
+                            child: ListView.separated(
+                              itemCount: items.length,
+                              separatorBuilder:
+                                  (BuildContext context, int index) =>
+                                      const Divider(
+                                color: Colors.black,
+                              ),
+                              itemBuilder: (context, index) {
+                                return ListTile(
+                                  tileColor: Colors.white,
+                                  title: Text(items[index]),
+                                  trailing: Container(
+                                    child: FlatButton(
+                                      child: const Icon(Icons.thumb_up),
+                                      onPressed: () {
+                                        //感想に+1がつく
+                                      },
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ],
                       ),
-                    );
-                  },
-                ),
-            )
-          ],
+                    ),
+                  ),
+                  _textWidget(),
+                ],
+              ),
+            );
+          },
         ),
       ),
       // This trailing comma makes auto-formatting nicer for build methods.
@@ -196,10 +139,124 @@ class _SecondViewState extends State<SecondView> {
       _isLoading = true;
     });
 
-    final document = await PDFDocument.fromAsset('assets/sample.pdf');
-    setState(() {
-      _document = document;
-      _isLoading = false;
+    await fromAsset('assets/sample.pdf', 'sample.pdf').then((f) {
+      setState(() {
+        _document = f.path;
+        _isLoading = false;
+      });
     });
+  }
+
+  Future<File> fromAsset(String asset, String filename) async {
+    final completer = Completer<File>();
+
+    try {
+      final dir = await getApplicationDocumentsDirectory();
+      final file = File('${dir.path}/$filename');
+      final data = await rootBundle.load(asset);
+      final bytes = data.buffer.asUint8List();
+      await file.writeAsBytes(bytes, flush: true);
+      completer.complete(file);
+    } on Exception catch (e) {
+      throw Exception('$e');
+    }
+
+    return completer.future;
+  }
+
+  Widget _textWidget() {
+    return TextField(
+      keyboardType: TextInputType.multiline,
+      maxLines: null,
+      controller: commentController,
+      decoration: InputDecoration(
+        hintText: 'コメントや質問を入力してね',
+        suffixIcon: IconButton(
+          icon: const Icon(Icons.send),
+          onPressed: () {
+            print(commentController.text);
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _alertDialog() {
+    return AlertDialog(
+      title: const Text('全体を通しての感想を教えてね'),
+      content: SizedBox(
+        height: 240,
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('もっと聞きたい'),
+                FlatButton(
+                  child: const Icon(Icons.favorite),
+                  onPressed: () {
+                    //感想をサーバーに送る
+                  },
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('とても参考になった'),
+                FlatButton(
+                  child: const Icon(Icons.favorite),
+                  onPressed: () {
+                    //感想をサーバーに送る
+                  },
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('面白かった'),
+                FlatButton(
+                  child: const Icon(Icons.favorite),
+                  onPressed: () {
+                    //感想をサーバーに送る
+                  },
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('愛している'),
+                FlatButton(
+                  child: const Icon(Icons.favorite),
+                  onPressed: () {
+                    //感想をサーバーに送る
+                  },
+                ),
+              ],
+            ),
+            TextField(
+              controller: minuteController,
+              decoration: InputDecoration(
+                hintText: 'コメントや質問を入力してね',
+                suffixIcon: IconButton(
+                  icon: const Icon(Icons.send),
+                  onPressed: () {
+                    print(minuteController.text);
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        FlatButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('OK'),
+        ),
+      ],
+    );
   }
 }

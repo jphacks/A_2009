@@ -4,6 +4,8 @@ PODS:
     - MTBBarcodeScanner
     - SwiftProtobuf
   - Flutter (1.0.0)
+  - flutter_pdfview (1.0.2):
+    - Flutter
   - flutter_plugin_pdf_viewer (1.0.5):
     - Flutter
   - FMDB (2.7.5):
@@ -20,6 +22,7 @@ PODS:
 DEPENDENCIES:
   - barcode_scan (from `.symlinks/plugins/barcode_scan/ios`)
   - Flutter (from `Flutter`)
+  - flutter_pdfview (from `.symlinks/plugins/flutter_pdfview/ios`)
   - flutter_plugin_pdf_viewer (from `.symlinks/plugins/flutter_plugin_pdf_viewer/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
@@ -35,6 +38,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/barcode_scan/ios"
   Flutter:
     :path: Flutter
+  flutter_pdfview:
+    :path: ".symlinks/plugins/flutter_pdfview/ios"
   flutter_plugin_pdf_viewer:
     :path: ".symlinks/plugins/flutter_plugin_pdf_viewer/ios"
   path_provider:
@@ -45,6 +50,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   barcode_scan: a5c27959edfafaa0c771905bad0b29d6d39e4479
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  flutter_pdfview: 25f53dd6097661e6395b17de506e6060585946bd
   flutter_plugin_pdf_viewer: 7d8e3a03f42d346b2af8840f980b7de95ad5732a
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   MTBBarcodeScanner: f453b33c4b7dfe545d8c6484ed744d55671788cb
