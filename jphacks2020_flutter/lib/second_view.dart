@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -84,14 +85,23 @@ class _SecondViewState extends State<SecondView> {
                           SizedBox(
                             height: (constraints.maxHeight - 50) / 2,
                             child: Center(
-                                child: _isInit
-                                    ? const Text('please load PDF')
-                                    : _isLoading
-                                        ? const Center(
-                                            child: CircularProgressIndicator())
-                                        : PDFView(
-                                            filePath: _document,
-                                            swipeHorizontal: true)),
+                              child: _isInit
+                                  ? const Text('please load PDF')
+                                  : _isLoading
+                                      ? const Center(
+                                          child: CircularProgressIndicator())
+                                      : const PDF(swipeHorizontal: true,
+                              onPageChanged: () {})
+                                          .cachedFromUrl(
+                                          'https://www.kanazawa-u.ac.jp/wp-content/uploads/2019/07/2020_info.pdf',
+                                          placeholder: (progress) => Center(
+                                              child: Text('$progress %')),
+                                          errorWidget: (dynamic error) =>
+                                              Center(
+                                                  child:
+                                                      Text(error.toString())),
+                                        ),
+                            ),
                           ),
                           SizedBox(
                             height: (constraints.maxHeight - 50) / 2,
