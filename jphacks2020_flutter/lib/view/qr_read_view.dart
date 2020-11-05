@@ -53,7 +53,6 @@ class _QrReadViewState extends State<QrReadView> {
   void initState() {
     super.initState();
     _scan();
-    // getLocalTestJSONData();
   }
 
   @override
@@ -91,21 +90,7 @@ class _QrReadViewState extends State<QrReadView> {
     );
   }
 
-  final _comments = <Comment>[];
   Presentation _presentation;
-
-  Future<String> _loadAVaultAsset() async {
-    return rootBundle.loadString('json/api_name.json');
-  }
-
-  Future getLocalTestJSONData() async {
-    final jsonString = await _loadAVaultAsset();
-    setState(() {
-      final jsonResponse = json.decode(jsonString) as Map<String, dynamic>;
-      _presentation = Presentation.fromJson(jsonResponse);
-      print(_presentation);
-    });
-  }
 
   Future _insertScanItem(String url) async {
     await ApiClient().getPosts(url).then((response) {

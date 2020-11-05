@@ -13,12 +13,12 @@ Future<String> getDatabaseFilePath(String dbName) async {
   print(documentsDirectory);
 
   final path = join(documentsDirectory.path, dbName);
-  if (new Directory(dirname(path)).existsSync()) {
+  if (Directory(dirname(path)).existsSync()) {
     return path;
   }
 
   try {
-    await new Directory(dirname(path)).create(recursive: true);
+    await Directory(dirname(path)).create(recursive: true);
   } on Exception catch (e) {
     print(e);
   }
