@@ -15,10 +15,10 @@ class Comment {
     plus = json['count'] as int;
   }
 
-  static const String columnUuid = 'uuid';
-  static const String columnCount = 'count';
-  static const String columnText = 'text';
-  static const String columnIndex = 'number';
+  // static const String columnUuid = 'uuid';
+  // static const String columnCount = 'count';
+  // static const String columnText = 'text';
+  // static const String columnIndex = 'number';
 
   String commentId;
   String text;
@@ -33,7 +33,8 @@ class Presentation {
   Presentation.fromJson(Map<String, dynamic> json) {
     slideId = json['material']['uuid'] as String;
 
-    for (final comment in json['comments'] as List<Map<String, dynamic>>) {
+    for (final comment in json['comments'].cast<Map<String, dynamic>>()
+        as List<Map<String, dynamic>>) {
       comments.add(Comment.fromJson(comment));
     }
 
@@ -42,12 +43,11 @@ class Presentation {
     author = json['material']['author'] as String;
   }
 
-
-  static const String columnUuid = 'uuid';
-  static const String columnUrl = 'url';
-  static const String columnTitle = 'title';
-  static const String columnAuthor = 'author';
-  static const String columnComments = 'comments';
+  // static const String columnUuid = 'uuid';
+  // static const String columnUrl = 'url';
+  // static const String columnTitle = 'title';
+  // static const String columnAuthor = 'author';
+  // static const String columnComments = 'comments';
 
   String slideId;
   List<Comment> comments = <Comment>[];
@@ -61,7 +61,7 @@ class Presentation {
 
 // Presentation _presentation;
 // final _comments = <Comment>[];
-//
+
 // Future<String> _loadAVaultAsset() async {
 //   return rootBundle.loadString('json/api_name.json');
 // }

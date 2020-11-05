@@ -45,13 +45,15 @@ class _QrReadViewState extends State<QrReadView> {
     }
   }
 
-  Future _moveToHistoryView(BuildContext context) => Navigator.push(
-      context, MaterialPageRoute(builder: (context) => HistoryView()));
+  Future _moveToHistoryView(BuildContext context) =>
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => HistoryView()));
 
   @override
   void initState() {
     super.initState();
-    _scan();
+    // _scan();
+    getLocalTestJSONData();
   }
 
   @override
@@ -67,7 +69,10 @@ class _QrReadViewState extends State<QrReadView> {
             ),
             Text(
               '$readData',
-              style: Theme.of(context).textTheme.bodyText1,
+              style: Theme
+                  .of(context)
+                  .textTheme
+                  .bodyText1,
             ),
             ElevatedButton(
               child: const Text('もう一度'),
@@ -89,29 +94,31 @@ class _QrReadViewState extends State<QrReadView> {
   final _comments = <Comment>[];
   Presentation _presentation;
 
-  // List<Post> posts = [];
+  Future<String> _loadAVaultAsset() async {
+    return rootBundle.loadString('json/api_name.json');
+  }
+
+  Future getLocalTestJSONData() async {
+    final jsonString = await _loadAVaultAsset();
+    setState(() {
+      final jsonResponse = json.decode(jsonString) as Map<String, dynamic>;
+      _presentation = Presentation.fromJson(jsonResponse);
+      print(_presentation);
+    });
+  }
 
   Future _insertScanItem(String url) async {
-    // await SampleService().getPosts().then((response) {
-    //   final list = json.decode(response.body).cast<Map<String, dynamic>>()
-    //       as List<Map<String, dynamic>>;
-    //   setState(() {
-    //     posts = list.map((post) => Post.fromJson(post)).toList();
-    //     print('post: $posts');
-    //   });
+    // await ApiClient().getPosts(url).then((response) {
+    //   final jsonResponse = json.decode(response.body) as Map<String, dynamic>;
+    //   _presentation = Presentation.fromJson(jsonResponse);
     // });
-
-    await ApiClient().getPosts(url).then((response) {
-      final jsonResponse = json.decode(response.body) as Map<String, dynamic>;
-      _presentation = Presentation.fromJson(jsonResponse);
-    });
 
     final path = await getDatabaseFilePath(dbName);
     final db = await openDatabase(path, version: 1,
         onCreate: (Database db, int version) async {
-      await db.execute(
-          'CREATE TABLE $tableName (id INTEGER PRIMARY KEY, text TEXT)');
-    });
+          await db.execute(
+              'CREATE TABLE $tableName (id INTEGER PRIMARY KEY, text TEXT)');
+        });
 
     await db.transaction((t) async {
       final i = await t.insert(tableName, ScanItem.fromQR(url).toMap());
