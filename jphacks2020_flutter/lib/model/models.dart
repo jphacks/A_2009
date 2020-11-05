@@ -8,6 +8,11 @@ class Comment {
     text = newText;
   }
 
+  static const String columnUuid = 'uuid';
+  static const String columnCount = 'count';
+  static const String columnText = 'text';
+  static const String columnIndex = 'number';
+
   String commentId;
   String text;
   int index;
@@ -15,11 +20,18 @@ class Comment {
 }
 
 class Presentation {
-  Presentation(
-      this.slideId, this.comments, this.title, this.date, this.author);
+  Presentation(this.slideId, this.comments, this.url, this.title, this.date,
+      this.author);
+
+  static const String columnUuid = 'uuid';
+  static const String columnUrl = 'url';
+  static const String columnTitle = 'title';
+  static const String columnAuthor = 'author';
+  static const String columnComments = 'comments';
 
   String slideId;
   List<Comment> comments;
+  String url;
   String title;
   DateTime date;
   String author;
