@@ -1,0 +1,43 @@
+p#notice
+  = notice
+h1
+  | コメント
+table
+  thead
+    tr
+      th
+        | ID
+      th
+        | Uuid
+      th
+        | Number
+      th
+        | plus
+      th
+        | text
+      th
+        | Material
+      th[colspan="3"]
+  tbody
+    - @comments.each do |comment|
+      tr
+        td
+          = comment&.id
+        td
+          = comment&.uuid
+        td
+          = comment&.number
+        td
+          = comment&.count
+        td
+          = comment&.text
+        td
+          = material&.uuid
+        / td
+        /   = link_to 'Show', material_comments_path(material.uuid)
+        / td
+        /   = link_to 'Edit', edit_comment_path(comment.uuid)
+        / td
+        /   = link_to 'Destroy', comment.uuid, method: :delete, data: { confirm: 'Are you sure?' }
+br
+/ = link_to 'New comment', new_comment_path

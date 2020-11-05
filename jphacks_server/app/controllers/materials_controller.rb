@@ -1,34 +1,27 @@
 class MaterialsController < ApplicationController
-  before_action :set_material, only: [:show, :edit, :update, :destroy]
+  # include ::MaterialsHelper
+  # before_action :set_material, only: [:show, :edit, :update, :destroy]
 
   # GET /materials
   # GET /materials.json
   def index
-    @materials = Material.all
+    @materials = Material.order(updated_at: :desc)
   end
 
-  # GET /materials/1
-  # GET /materials/1.json
-  def show
-  end
+  def show; end
 
-  # GET /materials/new
   def new
     @material = Material.new
   end
 
-  # GET /materials/1/edit
-  def edit
-  end
+  def edit; end
 
-  # POST /materials
-  # POST /materials.json
   def create
-    @material = Material.new(material_params)
+    @material = Material.new(material_params.merge(uuid: SecureRandom.alphanumeric()))
 
     respond_to do |format|
       if @material.save
-        format.html { redirect_to @material, notice: 'Material was successfully created.' }
+        format.html { redirect_to material_path(@material.uuid), notice: 'Material was successfully created.' }
         format.json { render :show, status: :created, location: @material }
       else
         format.html { render :new }
@@ -37,11 +30,9 @@ class MaterialsController < ApplicationController
     end
   end
 
-  # PATCH/PUT /materials/1
-  # PATCH/PUT /materials/1.json
   def update
     respond_to do |format|
-      if @material.update(material_params)
+      if material.update(material_params)
         format.html { redirect_to @material, notice: 'Material was successfully updated.' }
         format.json { render :show, status: :ok, location: @material }
       else
@@ -51,10 +42,8 @@ class MaterialsController < ApplicationController
     end
   end
 
-  # DELETE /materials/1
-  # DELETE /materials/1.json
   def destroy
-    @material.destroy
+    material.destroy
     respond_to do |format|
       format.html { redirect_to materials_url, notice: 'Material was successfully destroyed.' }
       format.json { head :no_content }
@@ -63,12 +52,21 @@ class MaterialsController < ApplicationController
 
   private
     # Use callbacks to share common setup or constraints between actions.
-    def set_material
-      @material = Material.find(params[:id])
+    def material
+      @material = Material.find_by(uuid: params[:uuid])
     end
+    helper_method :material
 
-    # Only allow a list of trusted parameters through.
     def material_params
-      params.require(:material).permit(:uuid, :url, :author, :password_digest, :title)
+      params
+        .require(
+          :material
+        )
+        .permit(
+          :url,
+          :author,
+          :password_digest,
+          :title
+        )
     end
 end

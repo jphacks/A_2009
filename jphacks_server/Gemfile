@@ -17,9 +17,12 @@ gem 'slim-rails'
 gem 'html2slim'
 gem 'bootsnap', '>= 1.4.2', require: false
 gem 'factory_bot_rails'
-gem 'cloudinary'
 gem 'carrierwave'
 gem 'rails-i18n'
+gem 'materialize-sass'
+gem 'material_icons'
+gem 'fog-aws'
+gem 'rqrcode'
 
 group :development, :test do
   gem 'better_errors'

@@ -23,6 +23,9 @@ module Vele
     config.i18n.default_locale = :ja
     config.i18n.load_path += Dir[Rails.root.join("config", "locales", "*.yml").to_s]
     config.i18n.load_path += Dir[Rails.root.join("config", "locales", "**", "*.yml").to_s]
+    config.active_support.escape_html_entities_in_json = true
+    config.filter_parameters += [:password]
+    config.encoding = "utf-8"
     config.generators.template_engine = :slim
     config.generators.system_tests = nil
   end

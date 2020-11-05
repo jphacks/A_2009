@@ -22,7 +22,9 @@ table
         td
           = material.uuid
         td
-          = material.url
+          a href=material.url target='_blank'
+            = material.url
+          object data=material.url type="application/pdf" height="300"
         td
           = material.author
         td
@@ -30,10 +32,10 @@ table
         td
           = material.title
         td
-          = link_to 'Show', material
+          = link_to 'Show', material_path(material.uuid)
         td
-          = link_to 'Edit', edit_material_path(material)
+          = link_to 'Edit', edit_material_path(material.uuid)
         td
-          = link_to 'Destroy', material, method: :delete, data: { confirm: 'Are you sure?' }
+          = link_to 'Destroy', material.uuid, method: :delete, data: { confirm: 'Are you sure?' }
 br
 = link_to 'New Material', new_material_path
