@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/services.dart';
+import 'package:jphacks2020/model/api_client.dart';
+import 'package:jphacks2020/model/models.dart';
 import 'package:jphacks2020/model/scan_item.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -41,9 +45,8 @@ class _QrReadViewState extends State<QrReadView> {
     }
   }
 
-  Future _moveToHistoryView(BuildContext context) =>
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => HistoryView()));
+  Future _moveToHistoryView(BuildContext context) => Navigator.push(
+      context, MaterialPageRoute(builder: (context) => HistoryView()));
 
   @override
   void initState() {
@@ -83,7 +86,26 @@ class _QrReadViewState extends State<QrReadView> {
     );
   }
 
-  Future _insertScanItem(String code) async {
+  final _comments = <Comment>[];
+  Presentation _presentation;
+
+  // List<Post> posts = [];
+
+  Future _insertScanItem(String url) async {
+    // await SampleService().getPosts().then((response) {
+    //   final list = json.decode(response.body).cast<Map<String, dynamic>>()
+    //       as List<Map<String, dynamic>>;
+    //   setState(() {
+    //     posts = list.map((post) => Post.fromJson(post)).toList();
+    //     print('post: $posts');
+    //   });
+    // });
+
+    await ApiClient().getPosts(url).then((response) {
+      final jsonResponse = json.decode(response.body) as Map<String, dynamic>;
+      _presentation = Presentation.fromJson(jsonResponse);
+    });
+
     final path = await getDatabaseFilePath(dbName);
     final db = await openDatabase(path, version: 1,
         onCreate: (Database db, int version) async {
@@ -92,10 +114,10 @@ class _QrReadViewState extends State<QrReadView> {
     });
 
     await db.transaction((t) async {
-      final i = await t.insert(tableName, ScanItem.fromQR(code).toMap());
+      final i = await t.insert(tableName, ScanItem.fromQR(url).toMap());
       print(i);
     });
 
-    db.close();
+    await db.close();
   }
 }
