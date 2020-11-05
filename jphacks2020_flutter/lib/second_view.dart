@@ -21,6 +21,8 @@ class _SecondViewState extends State<SecondView> {
   bool _isLoading = false, _isInit = true;
   String _document;
   final items = List<String>.generate(5, (i) => 'comment $i');
+  final StreamController<String> _pageCountController =
+      StreamController<String>();
 
   final commentController = TextEditingController();
   final minuteController = TextEditingController();
@@ -90,10 +92,15 @@ class _SecondViewState extends State<SecondView> {
                                   : _isLoading
                                       ? const Center(
                                           child: CircularProgressIndicator())
-                                      : const PDF(swipeHorizontal: true,
-                              onPageChanged: () {})
+                                      : PDF(
+                                              swipeHorizontal: true,
+                                              onPageChanged: (int current,
+                                                      int total) =>
+                                                  _pageCountController.add(
+                                                      '${current + 1} '
+                                                          '- $total'))
                                           .cachedFromUrl(
-                                          'https://www.kanazawa-u.ac.jp/wp-content/uploads/2019/07/2020_info.pdf',
+                                          'https://a-2009-jphacks--2020-s3.s3-ap-northeast-1.amazonaws.com/uploads/material/1__tNY0w0GRlbfLvg58__url/JPHACKS__Vele.pdf',
                                           placeholder: (progress) => Center(
                                               child: Text('$progress %')),
                                           errorWidget: (dynamic error) =>
