@@ -37,7 +37,7 @@ class Presentation {
         as List<Map<String, dynamic>>) {
       comments.add(Comment.fromJson(comment));
     }
-
+    url = json['material']['url'] as String;
     title = json['material']['title'] as String;
     date = DateTime.now();
     author = json['material']['author'] as String;

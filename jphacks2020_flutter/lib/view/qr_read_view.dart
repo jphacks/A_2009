@@ -52,8 +52,8 @@ class _QrReadViewState extends State<QrReadView> {
   @override
   void initState() {
     super.initState();
-    // _scan();
-    getLocalTestJSONData();
+    _scan();
+    // getLocalTestJSONData();
   }
 
   @override
@@ -108,10 +108,11 @@ class _QrReadViewState extends State<QrReadView> {
   }
 
   Future _insertScanItem(String url) async {
-    // await ApiClient().getPosts(url).then((response) {
-    //   final jsonResponse = json.decode(response.body) as Map<String, dynamic>;
-    //   _presentation = Presentation.fromJson(jsonResponse);
-    // });
+    await ApiClient().getPosts(url).then((response) {
+      final jsonResponse = json.decode(response.body) as Map<String, dynamic>;
+      _presentation = Presentation.fromJson(jsonResponse);
+      print(_presentation.url);
+    });
 
     final path = await getDatabaseFilePath(dbName);
     final db = await openDatabase(path, version: 1,
