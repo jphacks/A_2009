@@ -1,0 +1,24 @@
+{
+  "material": {
+    "url": "https://a-2009-jphacks--2020-s3.s3.amazonaws.com/uploads/material/1__tNY0w0GRlbfLvg58__url/JPHACKS__Vele.pdf",
+    "author": "テスト作者",
+    "title": "テスト",
+    "uuid": "tNY0w0GRlbfLvg58"
+  },
+  "comments": [
+    {
+      "count": 2,
+      "number": 1,
+      "uuid": "zNGqdnrOg7bmyy0J",
+      "text": "コメントテスト",
+      "material_uuid": "tNY0w0GRlbfLvg58"
+    },
+    {
+      "count": 0,
+      "number": 1,
+      "uuid": "pVNt23kwZby4QBxk",
+      "text": "コメントテスト",
+      "material_uuid": "tNY0w0GRlbfLvg58"
+    }
+  ]
+}
