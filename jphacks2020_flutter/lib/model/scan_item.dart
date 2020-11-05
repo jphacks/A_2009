@@ -11,6 +11,7 @@ class ScanItem {
 
   static const String columnId = 'id';
   static const String columnText = 'text';
+  
 
   Map<String, dynamic> toMap() {
     final map = <String, dynamic>{columnText: text};

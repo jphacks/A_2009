@@ -56,7 +56,7 @@ class HistoryViewState extends State<HistoryView> {
                         style: TextStyle(fontSize: 20),
                       ),
                     ),
-                    Positioned(right: 0, child: _menuButton(context, index))
+                    // Positioned(right: 0, child: _menuButton(context, index))
                   ]),
                   Row(
                     children: [
@@ -80,32 +80,32 @@ class HistoryViewState extends State<HistoryView> {
             }));
   }
 
-  Widget _menuButton(BuildContext context, int index) =>
-      PopupMenuButton<PopUpMenuType>(
-        onSelected: (PopUpMenuType type) {
-          switch (type) {
-            case PopUpMenuType.edit:
-              _moveToFileEditView(context, bloc, proj);
-              break;
-
-            case PopUpMenuType.delete:
-              bloc.delete(proj);
-              cancelNotification(proj);
-              break;
-          }
-        },
-        itemBuilder: (BuildContext context) => <PopupMenuEntry<PopUpMenuType>>[
-          const PopupMenuItem<PopUpMenuType>(
-            value: PopUpMenuType.edit,
-            child: Text('編集'),
-          ),
-          const PopupMenuItem<PopUpMenuType>(
-            value: PopUpMenuType.delete,
-            child: Text('削除'),
-          ),
-        ],
-        icon: const Icon(Icons.more_vert),
-      );
+  // Widget _menuButton(BuildContext context, int index) =>
+  //     PopupMenuButton<PopUpMenuType>(
+  //       onSelected: (PopUpMenuType type) {
+  //         switch (type) {
+  //           case PopUpMenuType.edit:
+  //             _moveToFileEditView(context, bloc, proj);
+  //             break;
+  //
+  //           case PopUpMenuType.delete:
+  //             bloc.delete(proj);
+  //             cancelNotification(proj);
+  //             break;
+  //         }
+  //       },
+  //       itemBuilder: (BuildContext context) => <PopupMenuEntry<PopUpMenuType>>[
+  //         const PopupMenuItem<PopUpMenuType>(
+  //           value: PopUpMenuType.edit,
+  //           child: Text('編集'),
+  //         ),
+  //         const PopupMenuItem<PopUpMenuType>(
+  //           value: PopUpMenuType.delete,
+  //           child: Text('削除'),
+  //         ),
+  //       ],
+  //       icon: const Icon(Icons.more_vert),
+  //     );
 }
 
 enum PopUpMenuType { edit, delete }
