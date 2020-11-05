@@ -1,6 +1,3 @@
-// import 'dart:convert';
-
-// import 'package:flutter/services.dart' show rootBundle;
 import 'package:uuid/uuid.dart';
 
 class Comment {
@@ -24,12 +21,14 @@ class Presentation {
   String slideId;
   List<Comment> comments;
   String title;
-  String date;
+  DateTime date;
   String author;
 }
 
+// getLocalTestJSONData();
 
-// List<dynamic> _data;
+// Presentation _presentation;
+// final _comments = <Comment>[];
 //
 // Future<String> _loadAVaultAsset() async {
 //   return rootBundle.loadString('json/api_name.json');
@@ -39,7 +38,19 @@ class Presentation {
 //   final jsonString = await _loadAVaultAsset();
 //   setState(() {
 //     final dynamic jsonResponse = json.decode(jsonString);
-//     print('### getLocalTestJSONData:$jsonResponse');
-//     _data = jsonResponse['categorydata'] as List<dynamic>;
+//     for (final comment in jsonResponse['comments']) {
+//       _comments.add(Comment(
+//           comment['uuid'] as String,
+//           comment['text'] as String,
+//           comment['number'] as int,
+//           comment['count'] as int));
+//     }
+//
+//     _presentation = Presentation(
+//         jsonResponse['material']['uuid'] as String,
+//         _comments,
+//         jsonResponse['material']['title'] as String,
+//         DateTime.now(),
+//         jsonResponse['material']['author'] as String);
 //   });
 // }

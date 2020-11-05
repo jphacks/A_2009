@@ -1,42 +1,24 @@
 {
-  "count": 5,
-  "address": "Fukuoka",
-  "main": null,
-  "categorydata": [
+  "material": {
+    "url": "https://a-2009-jphacks--2020-s3.s3.amazonaws.com/uploads/material/1__tNY0w0GRlbfLvg58__url/JPHACKS__Vele.pdf",
+    "author": "テスト作者",
+    "title": "テスト",
+    "uuid": "tNY0w0GRlbfLvg58"
+  },
+  "comments": [
     {
-      "kapibara_id": "100",
-      "kapibara_Name": "カピバラさん",
-      "kapibara_Old": 10
+      "count": 2,
+      "number": 1,
+      "uuid": "zNGqdnrOg7bmyy0J",
+      "text": "コメントテスト",
+      "material_uuid": "tNY0w0GRlbfLvg58"
     },
     {
-      "kapibara_id": "101",
-      "kapibara_Name": "ホワイトさん",
-      "kapibara_Old": 20
-    },
-    {
-      "kapibara_id": "102",
-      "kapibara_Name": "仔カピバラさん",
-      "kapibara_Old": 30
-    },
-    {
-      "kapibara_id": "103",
-      "kapibara_Name": "ひだまりさん",
-      "kapibara_Old": 40
-    },
-    {
-      "kapibara_id": "104",
-      "kapibara_Name": "仔カピ兄",
-      "kapibara_Old": 50
-    },
-    {
-      "kapibara_id": "105",
-      "kapibara_Name": "カピバラ105",
-      "kapibara_Old": 60
-    },
-    {
-      "kapibara_id": "106",
-      "kapibara_Name": "カピバラ106",
-      "kapibara_Old": 70
+      "count": 0,
+      "number": 1,
+      "uuid": "pVNt23kwZby4QBxk",
+      "text": "コメントテスト",
+      "material_uuid": "tNY0w0GRlbfLvg58"
     }
   ]
 }
