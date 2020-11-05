@@ -9,6 +9,7 @@ Rails.application.routes.draw do
       resources :comments, only: %i[index create], param: :uuid do
         post :plus
       end
+      resources :impressions, only: %i[create]
     end
   end
 end

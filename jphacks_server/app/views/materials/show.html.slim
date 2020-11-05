@@ -19,7 +19,7 @@
           | 作成日時
         | :   
         = material.created_at.strftime("%Y/%m/%d %H:%M:%S")
-      = link_to(content_tag(:i, 'コメント一覧へ', class: 'material-icons comment'), material_comments_path(material&.uuid), class: 'btn waves-effect waves-light')
+      = link_to("コメント一覧", material_comments_path(material&.uuid), class: 'btn waves-effect waves-light')
 p#notice
   = notice
 / p

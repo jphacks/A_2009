@@ -1,43 +1,36 @@
 p#notice
   = notice
-h1
-  | コメント
-table
-  thead
-    tr
-      th
-        | ID
-      th
-        | Uuid
-      th
-        | Number
-      th
-        | plus
-      th
-        | text
-      th
-        | Material
-      th[colspan="3"]
-  tbody
-    - @comments.each do |comment|
-      tr
-        td
-          = comment&.id
-        td
-          = comment&.uuid
-        td
-          = comment&.number
-        td
-          = comment&.count
-        td
-          = comment&.text
-        td
-          = material&.uuid
-        / td
-        /   = link_to 'Show', material_comments_path(material.uuid)
-        / td
-        /   = link_to 'Edit', edit_comment_path(comment.uuid)
-        / td
-        /   = link_to 'Destroy', comment.uuid, method: :delete, data: { confirm: 'Are you sure?' }
-br
-/ = link_to 'New comment', new_comment_path
+.container
+  .row
+    .col.s6
+      /object data=material.url type="application/pdf" width="500" style="margin:0 auto;"
+    .col.s6
+      h3(style="text-align:center;") コメント一覧
+      ul class="collection with-header"
+        - @comments.each do |comment|
+          li class="collection-item"
+            p.comment__index__page__number
+              = comment.number
+              | ページ
+            p.comment__index__page__text
+              strong
+                = comment.text
+            p.comment__index__page__count
+              i class="material-icons" favorite
+              = comment.count
+      h3(style="text-align:center;") 感想
+      table.centered.striped(style="margin:0 auto;min-width:480px")
+        thead
+          tr
+            th
+              = Impression.human_attribute_name(:value)
+            th
+              | カウント
+        tbody
+          - Impression.value.options.each do |impression|
+            tr
+              td(style="text-align:center;")
+                = impression[0]
+              td(style="text-align:center;")
+              
+                = value_count(material.id, impression[1])

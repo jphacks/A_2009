@@ -25,7 +25,7 @@ module Api
         render json: { message: @comment.errors.full_messages }, status: :unprocessable_entity
       end
     end
-
+    
     private
 
     def material

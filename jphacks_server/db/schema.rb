@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_05_014548) do
+ActiveRecord::Schema.define(version: 2020_11_05_075758) do
 
   create_table "comments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin", force: :cascade do |t|
     t.bigint "material_id", null: false
@@ -24,6 +24,15 @@ ActiveRecord::Schema.define(version: 2020_11_05_014548) do
     t.index ["uuid"], name: "index_comments_on_uuid"
   end
 
+  create_table "impressions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin", force: :cascade do |t|
+    t.bigint "material_id", null: false
+    t.string "value", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["material_id"], name: "index_impressions_on_material_id"
+    t.index ["value"], name: "index_impressions_on_value"
+  end
+
   create_table "materials", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin", force: :cascade do |t|
     t.string "uuid", null: false
     t.string "url", null: false
@@ -35,4 +44,5 @@ ActiveRecord::Schema.define(version: 2020_11_05_014548) do
     t.index ["uuid"], name: "index_materials_on_uuid"
   end
 
+  add_foreign_key "impressions", "materials"
 end
