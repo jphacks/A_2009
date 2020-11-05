@@ -3,7 +3,7 @@
     .col
       .material__show__qrcode
         p(style="text-align:center;")
-          = qrcode_tag "#{ENV['NGROK_URL']}/api/materials/#{material&.uuid}/comments"
+          = qrcode_tag "https://871181b35ce4.ngrok.io/api/materials/#{material&.uuid}/comments"
       p.material__show__title
         strong
           | タイトル

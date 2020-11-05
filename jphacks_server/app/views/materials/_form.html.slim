@@ -23,10 +23,11 @@
       = form.file_field :url, style: 'padding-left: 150px'
     .file-path-wrapper
       input class="file-path validate" type="text" placeholder="PDF版をアップロード"
-  .field
-    = form.label :password_digest
-    = form.text_field :password_digest
+  .input-field.col
+    i class="material-icons prefix" lock_outline
+    = form.text_field :password_digest, id: "material__form__password__icon"
+    = form.label :password_digest, for: 'material__form__password__icon'
     span(class="helper-text" data-error="wrong" data-success="right" style="color:#82da99") 資料をアクセスする際に必要なパスワードです
   .actions
-    = form.submit class: 'btn btn-primary'
+    = form.submit class: 'btn btn-primary', style: 'margin:0 auto;'
 

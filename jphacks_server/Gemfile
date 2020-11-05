@@ -24,6 +24,7 @@ gem 'material_icons'
 gem 'fog-aws'
 gem 'rqrcode'
 gem 'enumerize'
+gem 'trestle'
 
 group :development, :test do
   gem 'better_errors'
