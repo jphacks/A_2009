@@ -15,11 +15,6 @@ class Comment {
     plus = json['count'] as int;
   }
 
-  // static const String columnUuid = 'uuid';
-  // static const String columnCount = 'count';
-  // static const String columnText = 'text';
-  // static const String columnIndex = 'number';
-
   String commentId;
   String text;
   int index;
@@ -42,12 +37,6 @@ class Presentation {
     date = DateTime.now();
     author = json['material']['author'] as String;
   }
-
-  // static const String columnUuid = 'uuid';
-  // static const String columnUrl = 'url';
-  // static const String columnTitle = 'title';
-  // static const String columnAuthor = 'author';
-  // static const String columnComments = 'comments';
 
   String slideId;
   List<Comment> comments = <Comment>[];
