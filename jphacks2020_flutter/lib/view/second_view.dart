@@ -1,51 +1,33 @@
 import 'dart:async';
 import 'dart:convert'; //httpレスポンスをJSON形式に変換用
-import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
 import 'package:http/http.dart' as http;
-import 'package:path_provider/path_provider.dart';
 
 import '../model/models.dart';
 
 class SecondView extends StatefulWidget {
-  const SecondView({Key key, this.title}) : super(key: key);
+  const SecondView({Key key, this.presentation}) : super(key: key);
 
-  final String title;
+  final Presentation presentation;
 
   @override
   _SecondViewState createState() => _SecondViewState();
 }
 
 class _SecondViewState extends State<SecondView> {
-  bool _isLoading = false, _isInit = true;
-
   final commentController = TextEditingController();
   final minuteController = TextEditingController();
-  Presentation _presentation;
   List<Comment> _comments;
-
+  int _currentPage;
   @override
   void initState() {
-    _loadFromAssets();
-    _getLocalTestJSONData();
     super.initState();
-  }
-
-  Future<String> _loadAVaultAsset() async {
-    return rootBundle.loadString('json/api_name.json');
-  }
-
-  Future _getLocalTestJSONData() async {
-    final jsonString = await _loadAVaultAsset();
-    setState(() {
-      final jsonResponse = json.decode(jsonString) as Map<String, dynamic>;
-      _presentation = Presentation.fromJson(jsonResponse);
-      _comments = _presentation.comments.where((i) => i.index == 0).toList();
-    });
+    _comments =
+        widget.presentation.comments.where((i) => i.index == 1).toList();
   }
 
   @override
@@ -65,7 +47,8 @@ class _SecondViewState extends State<SecondView> {
             child: FlatButton(
               child: const Icon(Icons.refresh),
               onPressed: () {
-                _loadFromAssets();
+                // _loadFromAssets();
+                //TODO
               },
             ),
           ),
@@ -104,30 +87,23 @@ class _SecondViewState extends State<SecondView> {
                             SizedBox(
                               height: (constraints.maxHeight - 50) / 2,
                               child: Center(
-                                child: _isInit
-                                    ? const Text('please load PDF')
-                                    : _isLoading
-                                        ? const Center(
-                                            child: CircularProgressIndicator())
-                                        : PDF(
-                                            swipeHorizontal: true,
-                                            onPageChanged:
-                                                (int current, int total) {
-                                              _comments.clear();
-                                              _comments = _presentation.comments
-                                                  .where(
-                                                      (i) => i.index == current)
-                                                  .toList();
-                                              setState(() {});
-                                            }).cachedFromUrl(
-                                            _presentation.url,
-                                            placeholder: (progress) => Center(
-                                                child: Text('$progress %')),
-                                            errorWidget: (dynamic error) =>
-                                                Center(
-                                                    child:
-                                                        Text(error.toString())),
-                                          ),
+                                child: PDF(
+                                    swipeHorizontal: true,
+                                    onPageChanged: (int current, int total) {
+                                      _comments.clear();
+                                      _comments = widget.presentation.comments
+                                          .where((i) => i.index == current + 1)
+                                          .toList();
+                                      setState(() {
+                                        _currentPage = current;
+                                      });
+                                    }).cachedFromUrl(
+                                  widget.presentation.url,
+                                  placeholder: (progress) =>
+                                      Center(child: Text('$progress %')),
+                                  errorWidget: (dynamic error) =>
+                                      Center(child: Text(error.toString())),
+                                ),
                               ),
                             ),
                             SizedBox(
@@ -185,7 +161,7 @@ class _SecondViewState extends State<SecondView> {
   }
 
   Future _plus(String uuid) async {
-    final slideId = _presentation.slideId;
+    final slideId = widget.presentation.slideId;
     final url = '$ngrokUrl/api/materials/$slideId/comments/$uuid/plus';
 
     final resp = await http.post(url);
@@ -199,7 +175,7 @@ class _SecondViewState extends State<SecondView> {
   }
 
   Future _impression(String impression) async {
-    final slideId = _presentation.slideId;
+    final slideId = widget.presentation.slideId;
     final url = '$ngrokUrl/api/materials/$slideId/impressions';
 
     final headers = <String, String>{'content-type': 'application/json'};
@@ -215,51 +191,24 @@ class _SecondViewState extends State<SecondView> {
   }
 
   Future _commentSend(String text) async {
-    final slideId = _presentation.slideId;
+    final slideId = widget.presentation.slideId;
     final url = '$ngrokUrl/api/materials/$slideId/comments';
     final headers = <String, String>{'content-type': 'application/json'};
-    final body = json.encode({'text': '$text', 'number': 3});
+    final body = json.encode({'text': '$text', 'number': _currentPage});
 
     print('body: $body');
 
     final resp = await http.post(url, headers: headers, body: body);
     if (resp.statusCode != 422) {
-      final respBody = resp.body;
-      print('Failed to post $respBody');
+      final jsonResponse = json.decode(resp.body) as Map<String, dynamic>;
+      setState(() {
+        _comments.add(Comment.fromJson(jsonResponse));
+      });
+      print('Failed to post $jsonResponse');
     } else {
       final statusCode = resp.statusCode;
       print('Failed to post $statusCode');
     }
-  }
-
-  Future _loadFromAssets() async {
-    setState(() {
-      _isInit = false;
-      _isLoading = true;
-    });
-
-    await _fromAsset('assets/sample.pdf', 'sample.pdf').then((f) {
-      setState(() {
-        _isLoading = false;
-      });
-    });
-  }
-
-  Future<File> _fromAsset(String asset, String filename) async {
-    final completer = Completer<File>();
-
-    try {
-      final dir = await getApplicationDocumentsDirectory();
-      final file = File('${dir.path}/$filename');
-      final data = await rootBundle.load(asset);
-      final bytes = data.buffer.asUint8List();
-      await file.writeAsBytes(bytes, flush: true);
-      completer.complete(file);
-    } on Exception catch (e) {
-      throw Exception('$e');
-    }
-
-    return completer.future;
   }
 
   Widget _textWidget() {
