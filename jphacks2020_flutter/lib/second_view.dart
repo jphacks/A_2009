@@ -6,11 +6,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
-import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
+import 'package:http/http.dart' as http;
 
 import 'model/models.dart';
-import 'stub.dart';
 
 class SecondView extends StatefulWidget {
   const SecondView({Key key, this.title}) : super(key: key);
@@ -28,7 +27,10 @@ class _SecondViewState extends State<SecondView> {
 
   final commentController = TextEditingController();
   final minuteController = TextEditingController();
+  int _nowpage = 0;
+  int _counter = 0;
   Presentation _presentation;
+  List<Comment> _readcomment;
 
   @override
   void initState() {
@@ -46,7 +48,7 @@ class _SecondViewState extends State<SecondView> {
     setState(() {
       final jsonResponse = json.decode(jsonString) as Map<String, dynamic>;
       _presentation = Presentation.fromJson(jsonResponse);
-      print(_presentation);
+      _readcomment = _presentation.comments.where((i) => i.index == 0).toList();
     });
   }
 
@@ -110,13 +112,24 @@ class _SecondViewState extends State<SecondView> {
                                       ? const Center(
                                           child: CircularProgressIndicator())
                                       : PDF(
-                                              swipeHorizontal: true,
-                                              onPageChanged:
-                                                  (int current, int total) =>
-                                                      _pageCountController
-                                                          .add('${current + 1} '
-                                                              '- $total'))
-                                          .cachedFromUrl(
+                                          swipeHorizontal: true,
+                                          defaultPage: _nowpage,
+                                          onPageChanged:
+                                              (int current, int total) {
+                                            _pageCountController
+                                                .add('${current + 1} '
+                                                    '- $total');
+                                            _readcomment.clear();
+                                            _readcomment = _presentation
+                                                .comments
+                                                .where(
+                                                    (i) => i.index == current)
+                                                .toList();
+                                            print(current);
+                                            setState(() {
+                                              _nowpage = current;
+                                            });
+                                          }).cachedFromUrl(
                                           _presentation.url,
                                           placeholder: (progress) => Center(
                                               child: Text('$progress %')),
@@ -130,7 +143,9 @@ class _SecondViewState extends State<SecondView> {
                           SizedBox(
                             height: (constraints.maxHeight - 50) / 2,
                             child: ListView.separated(
-                              itemCount: _presentation.comments.length,
+                              itemCount: _readcomment == null
+                                  ? 0
+                                  : _readcomment.length,
                               separatorBuilder:
                                   (BuildContext context, int index) =>
                                       const Divider(
@@ -139,14 +154,25 @@ class _SecondViewState extends State<SecondView> {
                               itemBuilder: (context, index) {
                                 return ListTile(
                                   tileColor: Colors.white,
-                                  title:
-                                      Text(_presentation.comments[index].text),
+                                  title: Text(_readcomment[index].text),
                                   trailing: Container(
-                                    child: FlatButton(
-                                      child: const Icon(Icons.thumb_up),
-                                      onPressed: () {
-                                        //感想に+1がつく
-                                      },
+                                    width: constraints.maxWidth / 3,
+                                    child: Row(
+                                      children: [
+                                        SizedBox(
+                                          child: FlatButton(
+                                            child: const Icon(Icons.thumb_up),
+                                            onPressed: () {
+                                              //感想に+1がつく
+                                            },
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          child: Text(
+                                              // ignore: lines_longer_than_80_chars
+                                              '${_readcomment[index].plus.toString()}'),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 );

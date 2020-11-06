@@ -1,6 +1,6 @@
 {
   "material": {
-    "url": "https://a-2009-jphacks--2020-s3.s3.amazonaws.com/uploads/material/1__tNY0w0GRlbfLvg58__url/JPHACKS__Vele.pdf",
+    "url": "https://www.ets.org/Media/Tests/GRE/pdf/gre_research_validity_data.pdf",
     "author": "テスト作者",
     "title": "テスト",
     "uuid": "tNY0w0GRlbfLvg58"
@@ -10,7 +10,7 @@
       "count": 2,
       "number": 0,
       "uuid": "zNGqdnrOg7bmyy0J",
-      "text": "コメントテスト",
+      "text": "コメント",
       "material_uuid": "tNY0w0GRlbfLvg58"
     },
     {
