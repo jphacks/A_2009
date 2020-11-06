@@ -46,6 +46,7 @@ class Presentation {
   String author;
 }
 
+const ngrokUrl = 'https://52e9bd550f9f.ngrok.io';
 // getLocalTestJSONData();
 
 // Presentation _presentation;

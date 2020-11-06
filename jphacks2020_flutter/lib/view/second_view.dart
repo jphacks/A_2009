@@ -144,7 +144,8 @@ class _SecondViewState extends State<SecondView> {
                                     trailing: IconButton(
                                         icon: const Icon(Icons.thumb_up),
                                         onPressed: () {
-                                          _plus();
+                                          _plus(_presentation
+                                              .comments[index].commentId);
                                         }),
                                   );
                                 },
@@ -165,10 +166,9 @@ class _SecondViewState extends State<SecondView> {
     );
   }
 
-  Future _plus() async {
+  Future _plus(String uuid) async {
     final slideId = _presentation.slideId;
-    final url =
-        'https://52e9bd550f9f.ngrok.io/api/materials/T0JuaLaHVNLhnLkP/comments/hogehoge/plus';
+    final url = '$ngrokUrl/api/materials/$slideId/comments/$uuid/plus';
 
     final resp = await http.post(url);
     if (resp.statusCode != 422) {
@@ -182,7 +182,7 @@ class _SecondViewState extends State<SecondView> {
 
   Future _impression(String impression) async {
     final slideId = _presentation.slideId;
-    final url = 'https://52e9bd550f9f.ngrok.io/api/materials/T0JuaLaHVNLhnLkP/impressions';
+    final url = '$ngrokUrl/api/materials/$slideId/impressions';
 
     final headers = <String, String>{'content-type': 'application/json'};
     final body = json.encode({'value': '$impression'});
@@ -198,8 +198,7 @@ class _SecondViewState extends State<SecondView> {
 
   Future _commentSend(String text) async {
     final slideId = _presentation.slideId;
-    final url =
-        'https://52e9bd550f9f.ngrok.io/api/materials/T0JuaLaHVNLhnLkP/comments';
+    final url = '$ngrokUrl/api/materials/$slideId/comments';
     final headers = <String, String>{'content-type': 'application/json'};
     final body = json.encode({'text': '$text', 'number': 3});
 
@@ -221,14 +220,14 @@ class _SecondViewState extends State<SecondView> {
       _isLoading = true;
     });
 
-    await fromAsset('assets/sample.pdf', 'sample.pdf').then((f) {
+    await _fromAsset('assets/sample.pdf', 'sample.pdf').then((f) {
       setState(() {
         _isLoading = false;
       });
     });
   }
 
-  Future<File> fromAsset(String asset, String filename) async {
+  Future<File> _fromAsset(String asset, String filename) async {
     final completer = Completer<File>();
 
     try {
