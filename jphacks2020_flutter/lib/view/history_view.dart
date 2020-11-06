@@ -124,7 +124,7 @@ class HistoryViewState extends State<HistoryView> {
   }
 
   Future _didTapCard(BuildContext context, String url) async {
-    showProgressDialog();
+    _showProgressDialog();
     await ApiClient().getPosts(url).then((response) {
       final jsonResponse = json.decode(response.body) as Map<String, dynamic>;
       Navigator.of(context).pop();
@@ -132,7 +132,7 @@ class HistoryViewState extends State<HistoryView> {
     });
   }
 
-  void showProgressDialog() {
+  void _showProgressDialog() {
     showGeneralDialog<Widget>(
         context: context,
         barrierDismissible: false,

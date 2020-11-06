@@ -1,5 +1,3 @@
-import 'package:uuid/uuid.dart';
-
 class Comment {
   Comment(this.commentId, this.text, this.index, this.plus);
 
