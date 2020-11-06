@@ -21,8 +21,9 @@ class SecondView extends StatefulWidget {
 class _SecondViewState extends State<SecondView> {
   final commentController = TextEditingController();
   final minuteController = TextEditingController();
-  List<Comment> _comments;
+  List<Comment> _comments = <Comment>[];
   int _currentPage;
+
   @override
   void initState() {
     super.initState();
@@ -74,84 +75,79 @@ class _SecondViewState extends State<SecondView> {
           builder: (BuildContext context, BoxConstraints constraints) {
             return GestureDetector(
               onTap: () => FocusScope.of(context).unfocus(),
-              child: Container(
-                color: Colors.white,
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: SingleChildScrollView(
-                        physics: const NeverScrollableScrollPhysics(),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            SizedBox(
-                              height: (constraints.maxHeight - 50) / 2,
-                              child: Center(
-                                child: PDF(
-                                    swipeHorizontal: true,
-                                    onPageChanged: (int current, int total) {
-                                      _comments.clear();
-                                      _comments = widget.presentation.comments
-                                          .where((i) => i.index == current + 1)
-                                          .toList();
-                                      setState(() {
-                                        _currentPage = current;
-                                      });
-                                    }).cachedFromUrl(
-                                  widget.presentation.url,
-                                  placeholder: (progress) =>
-                                      Center(child: Text('$progress %')),
-                                  errorWidget: (dynamic error) =>
-                                      Center(child: Text(error.toString())),
-                                ),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                      physics: const NeverScrollableScrollPhysics(),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          SizedBox(
+                            height: (constraints.maxHeight - 50) / 3,
+                            child: Center(
+                              child: PDF(
+                                  swipeHorizontal: true,
+                                  onPageChanged: (int current, int total) {
+                                    _comments.clear();
+                                    _comments = widget.presentation.comments
+                                        .where((i) => i.index == current + 1)
+                                        .toList();
+                                    setState(() {
+                                      _currentPage = current;
+                                    });
+                                  }).cachedFromUrl(
+                                widget.presentation.url,
+                                placeholder: (progress) =>
+                                    Center(child: Text('$progress %')),
+                                errorWidget: (dynamic error) =>
+                                    Center(child: Text(error.toString())),
                               ),
                             ),
-                            SizedBox(
-                              height: (constraints.maxHeight - 50) / 2,
-                              child: ListView.separated(
-                                itemCount:
-                                    _comments == null ? 0 : _comments.length,
-                                separatorBuilder:
-                                    (BuildContext context, int index) =>
-                                        const Divider(
-                                  color: Colors.black,
-                                ),
-                                itemBuilder: (context, index) {
-                                  return ListTile(
-                                    tileColor: Colors.white,
-                                    title: Text(_comments[index].text),
-                                    trailing: SizedBox(
-                                      width: constraints.maxWidth / 3,
-                                      child: Row(
-                                        children: [
-                                          SizedBox(
-                                            child: FlatButton(
-                                              child: const Icon(Icons.thumb_up),
-                                              onPressed: () {
-                                                _plus(
-                                                    _comments[index].commentId);
-                                              },
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            child: Text(
-                                                // ignore: lines_longer_than_80_chars
-                                                '${_comments[index].plus.toString()}'),
-                                          ),
-                                        ],
-                                      ),
+                          ),
+                          SizedBox(
+                            height: (constraints.maxHeight - 50) * 2 / 3,
+                            child: ListView.separated(
+                              itemCount: _comments.length,
+                              separatorBuilder:
+                                  (BuildContext context, int index) =>
+                                      const Divider(
+                                color: Colors.black,
+                              ),
+                              itemBuilder: (context, index) {
+                                return ListTile(
+                                  // tileColor: Colors.white,
+                                  title: Text(_comments[index].text),
+                                  trailing: SizedBox(
+                                    width: 70,
+                                    child: Row(
+                                      children: [
+                                        IconButton(
+                                          icon: const Icon(Icons.thumb_up),
+                                          onPressed: () {
+                                            setState(() {
+                                              _comments[index].plus += 1;
+                                            });
+                                            _plus(_comments[index].commentId);
+                                          },
+                                          splashColor: Colors.blue,
+                                        ),
+                                        Text(
+                                            // ignore: lines_longer_than_80_chars
+                                            '${_comments[index].plus.toString()}'),
+                                      ],
                                     ),
-                                  );
-                                },
-                              ),
+                                  ),
+                                );
+                              },
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
-                    _textWidget(),
-                  ],
-                ),
+                  ),
+                  _textWidget(),
+                ],
               ),
             );
           },
@@ -194,15 +190,17 @@ class _SecondViewState extends State<SecondView> {
     final slideId = widget.presentation.slideId;
     final url = '$ngrokUrl/api/materials/$slideId/comments';
     final headers = <String, String>{'content-type': 'application/json'};
-    final body = json.encode({'text': '$text', 'number': _currentPage});
-
-    print('body: $body');
+    final body = json.encode({'text': '$text', 'number': _currentPage + 1});
 
     final resp = await http.post(url, headers: headers, body: body);
     if (resp.statusCode != 422) {
       final jsonResponse = json.decode(resp.body) as Map<String, dynamic>;
+      final comment = jsonResponse['comment'] as Map<String, dynamic>;
       setState(() {
-        _comments.add(Comment.fromJson(jsonResponse));
+        widget.presentation.comments.insert(0, Comment.fromJson(comment));
+        _comments = widget.presentation.comments
+            .where((i) => i.index == _currentPage + 1)
+            .toList();
       });
       print('Failed to post $jsonResponse');
     } else {
@@ -226,6 +224,8 @@ class _SecondViewState extends State<SecondView> {
               icon: const Icon(Icons.send),
               onPressed: () {
                 _commentSend(commentController.text);
+                FocusScope.of(context).unfocus();
+                commentController.text = '';
               },
             ),
           ),
