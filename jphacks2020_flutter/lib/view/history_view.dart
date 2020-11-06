@@ -124,10 +124,26 @@ class HistoryViewState extends State<HistoryView> {
   }
 
   Future _didTapCard(BuildContext context, String url) async {
+    showProgressDialog();
     await ApiClient().getPosts(url).then((response) {
       final jsonResponse = json.decode(response.body) as Map<String, dynamic>;
+      Navigator.of(context).pop();
       _moveToSecondView(context, Presentation.fromJson(jsonResponse), url);
     });
+  }
+
+  void showProgressDialog() {
+    showGeneralDialog<Widget>(
+        context: context,
+        barrierDismissible: false,
+        transitionDuration: const Duration(milliseconds: 300),
+        barrierColor: Colors.black.withOpacity(0.5),
+        pageBuilder: (BuildContext context, Animation animation,
+            Animation secondaryAnimation) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        });
   }
 
   Future _moveToSecondView(
