@@ -6,11 +6,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
-import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 
-import 'model/models.dart';
-import 'stub.dart';
+import '../model/models.dart';
 
 class SecondView extends StatefulWidget {
   const SecondView({Key key, this.title}) : super(key: key);
@@ -74,7 +72,7 @@ class _SecondViewState extends State<SecondView> {
           SizedBox(
             width: 60,
             child: FlatButton(
-              child: const Icon(Icons.thumb_up),
+              child: const Icon(Icons.favorite),
               onPressed: () {
                 //全体の感想を入力できる枠が出てくる
                 showDialog<AlertDialog>(
@@ -93,72 +91,71 @@ class _SecondViewState extends State<SecondView> {
           builder: (BuildContext context, BoxConstraints constraints) {
             return GestureDetector(
               onTap: () => FocusScope.of(context).unfocus(),
-              child: Column(
-                children: [
-                  Expanded(
-                    child: SingleChildScrollView(
-                      physics: const NeverScrollableScrollPhysics(),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          SizedBox(
-                            height: (constraints.maxHeight - 50) / 2,
-                            child: Center(
-                              child: _isInit
-                                  ? const Text('please load PDF')
-                                  : _isLoading
-                                      ? const Center(
-                                          child: CircularProgressIndicator())
-                                      : PDF(
-                                              swipeHorizontal: true,
-                                              onPageChanged:
-                                                  (int current, int total) =>
-                                                      _pageCountController
-                                                          .add('${current + 1} '
-                                                              '- $total'))
-                                          .cachedFromUrl(
-                                          _presentation.url,
-                                          placeholder: (progress) => Center(
-                                              child: Text('$progress %')),
-                                          errorWidget: (dynamic error) =>
-                                              Center(
-                                                  child:
-                                                      Text(error.toString())),
-                                        ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: (constraints.maxHeight - 50) / 2,
-                            child: ListView.separated(
-                              itemCount: _presentation.comments.length,
-                              separatorBuilder:
-                                  (BuildContext context, int index) =>
-                                      const Divider(
-                                color: Colors.black,
+              child: Container(
+                color: Colors.white,
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: SingleChildScrollView(
+                        physics: const NeverScrollableScrollPhysics(),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            SizedBox(
+                              height: (constraints.maxHeight - 50) / 2,
+                              child: Center(
+                                child: _isInit
+                                    ? const Text('please load PDF')
+                                    : _isLoading
+                                        ? const Center(
+                                            child: CircularProgressIndicator())
+                                        : PDF(
+                                            swipeHorizontal: true,
+                                            onPageChanged: (int current,
+                                                    int total) =>
+                                                _pageCountController.add(
+                                                    '${current + 1} '
+                                                    '- $total')).cachedFromUrl(
+                                            _presentation.url,
+                                            placeholder: (progress) => Center(
+                                                child: Text('$progress %')),
+                                            errorWidget: (dynamic error) =>
+                                                Center(
+                                                    child:
+                                                        Text(error.toString())),
+                                          ),
                               ),
-                              itemBuilder: (context, index) {
-                                return ListTile(
-                                  tileColor: Colors.white,
-                                  title:
-                                      Text(_presentation.comments[index].text),
-                                  trailing: Container(
-                                    child: FlatButton(
-                                      child: const Icon(Icons.thumb_up),
-                                      onPressed: () {
-                                        //感想に+1がつく
-                                      },
-                                    ),
-                                  ),
-                                );
-                              },
                             ),
-                          ),
-                        ],
+                            SizedBox(
+                              height: (constraints.maxHeight - 50) / 2,
+                              child: ListView.separated(
+                                itemCount: _presentation.comments.length,
+                                separatorBuilder:
+                                    (BuildContext context, int index) =>
+                                        const Divider(
+                                  color: Colors.black,
+                                ),
+                                itemBuilder: (context, index) {
+                                  return ListTile(
+                                    tileColor: Colors.white,
+                                    title: Text(
+                                        _presentation.comments[index].text),
+                                    trailing: IconButton(
+                                        icon: const Icon(Icons.thumb_up),
+                                        onPressed: () {
+                                          //感想に+1
+                                        }),
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                  _textWidget(),
-                ],
+                    _textWidget(),
+                  ],
+                ),
               ),
             );
           },
@@ -199,17 +196,23 @@ class _SecondViewState extends State<SecondView> {
   }
 
   Widget _textWidget() {
-    return TextField(
-      keyboardType: TextInputType.multiline,
-      maxLines: null,
-      controller: commentController,
-      decoration: InputDecoration(
-        hintText: 'コメントや質問を入力してね',
-        suffixIcon: IconButton(
-          icon: const Icon(Icons.send),
-          onPressed: () {
-            print(commentController.text);
-          },
+    return Container(
+      color: Colors.grey[100],
+      child: Padding(
+        padding: const EdgeInsets.only(right: 8, left: 8),
+        child: TextField(
+          keyboardType: TextInputType.multiline,
+          maxLines: null,
+          controller: commentController,
+          decoration: InputDecoration(
+            hintText: 'コメントや質問を入力してね',
+            suffixIcon: IconButton(
+              icon: const Icon(Icons.send),
+              onPressed: () {
+                print(commentController.text);
+              },
+            ),
+          ),
         ),
       ),
     );
