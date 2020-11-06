@@ -28,6 +28,8 @@ class _SecondViewState extends State<SecondView> {
   final commentController = TextEditingController();
   final minuteController = TextEditingController();
   Presentation _presentation;
+  List<Comment> _readcomment;
+  int _nowpage = 0;
 
   @override
   void initState() {
@@ -45,7 +47,7 @@ class _SecondViewState extends State<SecondView> {
     setState(() {
       final jsonResponse = json.decode(jsonString) as Map<String, dynamic>;
       _presentation = Presentation.fromJson(jsonResponse);
-      print(_presentation);
+      _readcomment = _presentation.comments.where((i) => i.index == 0).toList();
     });
   }
 
@@ -112,11 +114,22 @@ class _SecondViewState extends State<SecondView> {
                                             child: CircularProgressIndicator())
                                         : PDF(
                                             swipeHorizontal: true,
-                                            onPageChanged: (int current,
-                                                    int total) =>
-                                                _pageCountController.add(
-                                                    '${current + 1} '
-                                                    '- $total')).cachedFromUrl(
+                                            onPageChanged:
+                                                (int current, int total) {
+                                              _pageCountController
+                                                  .add('${current + 1} '
+                                                      '- $total');
+                                              _readcomment.clear();
+                                              _readcomment = _presentation
+                                                  .comments
+                                                  .where(
+                                                      (i) => i.index == current)
+                                                  .toList();
+                                              print(current);
+                                              setState(() {
+                                                _nowpage = current;
+                                              });
+                                            }).cachedFromUrl(
                                             _presentation.url,
                                             placeholder: (progress) => Center(
                                                 child: Text('$progress %')),
@@ -130,22 +143,38 @@ class _SecondViewState extends State<SecondView> {
                             SizedBox(
                               height: (constraints.maxHeight - 50) / 2,
                               child: ListView.separated(
-                                itemCount: _presentation.comments.length,
+                                itemCount: _readcomment == null
+                                    ? 0
+                                    : _readcomment.length,
                                 separatorBuilder:
                                     (BuildContext context, int index) =>
-                                        const Divider(
+                                const Divider(
                                   color: Colors.black,
                                 ),
                                 itemBuilder: (context, index) {
                                   return ListTile(
                                     tileColor: Colors.white,
-                                    title: Text(
-                                        _presentation.comments[index].text),
-                                    trailing: IconButton(
-                                        icon: const Icon(Icons.thumb_up),
-                                        onPressed: () {
-                                          _plus();
-                                        }),
+                                    title: Text(_readcomment[index].text),
+                                    trailing: Container(
+                                      width: constraints.maxWidth / 3,
+                                      child: Row(
+                                        children: [
+                                          SizedBox(
+                                            child: FlatButton(
+                                              child: const Icon(Icons.thumb_up),
+                                              onPressed: () {
+                                                //感想に+1がつく
+                                              },
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            child: Text(
+                                              // ignore: lines_longer_than_80_chars
+                                                '${_readcomment[index].plus.toString()}'),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                   );
                                 },
                               ),
@@ -182,7 +211,8 @@ class _SecondViewState extends State<SecondView> {
 
   Future _impression(String impression) async {
     final slideId = _presentation.slideId;
-    final url = 'https://52e9bd550f9f.ngrok.io/api/materials/T0JuaLaHVNLhnLkP/impressions';
+    final url =
+        'https://52e9bd550f9f.ngrok.io/api/materials/T0JuaLaHVNLhnLkP/impressions';
 
     final headers = <String, String>{'content-type': 'application/json'};
     final body = json.encode({'value': '$impression'});
