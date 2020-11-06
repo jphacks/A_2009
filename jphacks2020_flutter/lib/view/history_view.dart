@@ -8,16 +8,27 @@ import 'package:jphacks2020/model/models.dart';
 import 'package:jphacks2020/model/scan_item.dart';
 import 'package:jphacks2020/view/second_view.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:intl/intl.dart';
 
-class HistoryView extends StatefulWidget {
+class HistoryView extends StatelessWidget {
   @override
-  HistoryViewState createState() {
-    return HistoryViewState();
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Scanner History'),
+      ),
+      body: HistoryList(),
+    );
   }
 }
 
-class HistoryViewState extends State<HistoryView> {
+class HistoryList extends StatefulWidget {
+  @override
+  HistoryListState createState() {
+    return HistoryListState();
+  }
+}
+
+class HistoryListState extends State<HistoryList> {
   List<ScanItem> _items = [];
   final _historyMenu = ['名前の変更', '削除'];
 
@@ -52,75 +63,71 @@ class HistoryViewState extends State<HistoryView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: const Text('Scanner History'),
-        ),
-        body: ListView.builder(
-            itemCount: _items.length,
-            itemBuilder: (context, index) {
-              return Card(
-                  child: InkWell(
-                onTap: () {
-                  _didTapCard(context, _items[index].url);
-                },
-                child: SizedBox(
-                  height: 100,
-                  child: Center(
-                    child: Column(
+    return ListView.builder(
+        itemCount: _items.length,
+        itemBuilder: (context, index) {
+          return Card(
+              child: InkWell(
+            onTap: () {
+              _didTapCard(context, _items[index].url);
+            },
+            child: SizedBox(
+              height: 100,
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              _items[index].title,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 35,
-                                color: Colors.black,
-                              ),
-                            ),
-                            PopupMenuButton<String>(
-                              icon: const Icon(Icons.more_vert),
-                              itemBuilder: (BuildContext context) {
-                                return _historyMenu.map((String s) {
-                                  return PopupMenuItem(
-                                    child: Text(s),
-                                    value: s,
-                                  );
-                                }).toList();
-                              },
-                            )
-                          ],
+                        Text(
+                          _items[index].title,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 35,
+                            color: Colors.black,
+                          ),
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              dateFormat.format(_items[index].date),
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20,
-                                color: Colors.black,
-                              ),
-                            ),
-                            Text(
-                              _items[index].author,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 30,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ],
+                        PopupMenuButton<String>(
+                          icon: const Icon(Icons.more_vert),
+                          itemBuilder: (BuildContext context) {
+                            return _historyMenu.map((String s) {
+                              return PopupMenuItem(
+                                child: Text(s),
+                                value: s,
+                              );
+                            }).toList();
+                          },
                         )
                       ],
                     ),
-                  ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          dateFormat.format(_items[index].date),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                            color: Colors.black,
+                          ),
+                        ),
+                        Text(
+                          _items[index].author,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 30,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
                 ),
-              ));
-            }));
+              ),
+            ),
+          ));
+        });
   }
 
   Future _didTapCard(BuildContext context, String url) async {
@@ -159,5 +166,3 @@ class HistoryViewState extends State<HistoryView> {
 }
 
 enum PopUpMenuType { edit, delete }
-
-DateFormat dateFormat = DateFormat('yyyy/MM/dd');
