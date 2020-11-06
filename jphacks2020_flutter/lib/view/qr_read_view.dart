@@ -73,22 +73,26 @@ class _QrReadViewState extends State<QrReadView> {
       final jsonResponse = json.decode(response.body) as Map<String, dynamic>;
       presentation = Presentation.fromJson(jsonResponse);
       _moveToSecondView(context, presentation);
-      _save(presentation);
+      _save(presentation, url);
       print(presentation.url);
     });
   }
 
-  Future _save(Presentation presentation) async {
+  Future _save(Presentation presentation, String url) async {
     final path = await getDatabaseFilePath(dbName);
     final db = await openDatabase(path, version: 1,
         onCreate: (Database db, int version) async {
       await db.execute(
-          'CREATE TABLE $tableName (id INTEGER PRIMARY KEY, text TEXT)');
+          // ignore: lines_longer_than_80_chars
+          'CREATE TABLE $tableName (id INTEGER PRIMARY KEY, title TEXT, author TEXT, date TEXT, url TEXT)');
     });
 
     await db.transaction((t) async {
-      final i =
-          await t.insert(tableName, ScanItem.fromQR(presentation.url).toMap());
+      final i = await t.insert(
+          tableName,
+          ScanItem.fromScan(presentation.title, presentation.author,
+                  presentation.date, url)
+              .toMap());
       print(i);
     });
 

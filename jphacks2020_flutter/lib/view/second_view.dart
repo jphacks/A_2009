@@ -22,7 +22,7 @@ class _SecondViewState extends State<SecondView> {
   final commentController = TextEditingController();
   final minuteController = TextEditingController();
   List<Comment> _comments = <Comment>[];
-  int _currentPage;
+  int _currentPage = 0;
 
   @override
   void initState() {
@@ -202,7 +202,7 @@ class _SecondViewState extends State<SecondView> {
             .where((i) => i.index == _currentPage + 1)
             .toList();
       });
-      print('Failed to post $jsonResponse');
+      print('$jsonResponse');
     } else {
       final statusCode = resp.statusCode;
       print('Failed to post $statusCode');
