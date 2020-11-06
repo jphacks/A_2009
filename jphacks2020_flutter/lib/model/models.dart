@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 class Comment {
   Comment(this.commentId, this.text, this.index, this.plus);
 
@@ -40,28 +42,4 @@ class Presentation {
 }
 
 const ngrokUrl = 'https://52e9bd550f9f.ngrok.io';
-// getLocalTestJSONData();
-
-// Presentation _presentation;
-// final _comments = <Comment>[];
-
-// Future<String> _loadAVaultAsset() async {
-//   return rootBundle.loadString('json/api_name.json');
-// }
-//
-// Future getLocalTestJSONData() async {
-//   final jsonString = await _loadAVaultAsset();
-//   setState(() {
-//     final dynamic jsonResponse = json.decode(jsonString);
-//     for (final comment in jsonResponse['comments']) {
-//       _comments.add(Comment.fromJson(comment));
-//     }
-//
-//     _presentation = Presentation(
-//         jsonResponse['material']['uuid'] as String,
-//         _comments,
-//         jsonResponse['material']['title'] as String,
-//         DateTime.now(),
-//         jsonResponse['material']['author'] as String);
-//   });
-// }
+DateFormat dateFormat = DateFormat('yyyy/MM/dd');
