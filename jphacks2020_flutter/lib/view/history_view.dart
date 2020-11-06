@@ -61,9 +61,9 @@ class HistoryViewState extends State<HistoryView> {
             itemBuilder: (context, index) {
               return Card(
                   child: InkWell(
-                    onTap: () {
-                      _didTapCard(context, _items[index].url);
-                    },
+                onTap: () {
+                  _didTapCard(context, _items[index].url);
+                },
                 child: SizedBox(
                   height: 100,
                   child: Center(
@@ -126,16 +126,20 @@ class HistoryViewState extends State<HistoryView> {
   Future _didTapCard(BuildContext context, String url) async {
     await ApiClient().getPosts(url).then((response) {
       final jsonResponse = json.decode(response.body) as Map<String, dynamic>;
-      _moveToSecondView(context, Presentation.fromJson(jsonResponse));
+      _moveToSecondView(context, Presentation.fromJson(jsonResponse), url);
     });
   }
 
-  Future _moveToSecondView(BuildContext context, Presentation presentation) =>
+  Future _moveToSecondView(
+          BuildContext context, Presentation presentation, String url) =>
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => SecondView(presentation: presentation)));
-
+              builder: (context) => SecondView(
+                    presentation: presentation,
+                    url: url,
+                    isFromQr: false,
+                  )));
 }
 
 enum PopUpMenuType { edit, delete }

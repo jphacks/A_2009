@@ -6,13 +6,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
 import 'package:http/http.dart' as http;
+import 'package:jphacks2020/model/api_client.dart';
 
 import '../model/models.dart';
 
 class SecondView extends StatefulWidget {
-  const SecondView({Key key, this.presentation}) : super(key: key);
+  const SecondView(
+      {Key key,
+      @required this.presentation,
+      @required this.url,
+      @required this.isFromQr})
+      : super(key: key);
 
   final Presentation presentation;
+  final String url;
+  final bool isFromQr;
 
   @override
   _SecondViewState createState() => _SecondViewState();
@@ -38,7 +46,9 @@ class _SecondViewState extends State<SecondView> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
           onPressed: () {
-            Navigator.pop(context);
+            widget.isFromQr
+                ? Navigator.of(context).popUntil((route) => route.isFirst)
+                : Navigator.pop(context);
           },
         ),
         title: const Text('JPHacks2020'),
@@ -48,8 +58,7 @@ class _SecondViewState extends State<SecondView> {
             child: FlatButton(
               child: const Icon(Icons.refresh),
               onPressed: () {
-                // _loadFromAssets();
-                //TODO
+                _reload();
               },
             ),
           ),
@@ -154,6 +163,19 @@ class _SecondViewState extends State<SecondView> {
         ),
       ),
     );
+  }
+
+  Future _reload() async {
+    await ApiClient().getPosts(widget.url).then((response) {
+      final jsonResponse = json.decode(response.body) as Map<String, dynamic>;
+      setState(() {
+        widget.presentation.comments =
+            Presentation.fromJson(jsonResponse).comments;
+        _comments = widget.presentation.comments
+            .where((i) => i.index == _currentPage + 1)
+            .toList();
+      });
+    });
   }
 
   Future _plus(String uuid) async {

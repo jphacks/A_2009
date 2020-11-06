@@ -44,11 +44,13 @@ class _QrReadViewState extends State<QrReadView> {
     }
   }
 
-  Future _moveToSecondView(BuildContext context, Presentation presentation) =>
+  Future _moveToSecondView(
+          BuildContext context, Presentation presentation, String url) =>
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => SecondView(presentation: presentation)));
+              builder: (context) => SecondView(
+                  presentation: presentation, url: url, isFromQr: true)));
 
   @override
   void initState() {
@@ -72,7 +74,7 @@ class _QrReadViewState extends State<QrReadView> {
     await ApiClient().getPosts(url).then((response) {
       final jsonResponse = json.decode(response.body) as Map<String, dynamic>;
       presentation = Presentation.fromJson(jsonResponse);
-      _moveToSecondView(context, presentation);
+      _moveToSecondView(context, presentation, url);
       _save(presentation, url);
       print(presentation.url);
     });

@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:jphacks2020/view/qr_read_view.dart';
 
-import '../view/second_view.dart';
 import 'history_view.dart';
 
 class FirstView extends StatelessWidget {
@@ -15,15 +14,8 @@ class FirstView extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Padding(
-              padding: const EdgeInsets.only(bottom: 20),
-              child: Text(
-                'EEL',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 150,
-                  color: Theme.of(context).primaryColor,
-                ),
-              ),
+              padding: const EdgeInsets.all(20),
+              child: Image.asset('assets/images/logo.png'),
             ),
             Padding(
               padding: const EdgeInsets.all(20),

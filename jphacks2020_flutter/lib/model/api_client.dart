@@ -12,8 +12,6 @@ class ApiClient extends http.BaseClient {
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) async {
     request.headers['User-Agent'] = 'Sample Flutter App.';
-    print('----- API REQUEST ------');
-    print(request.toString());
     if (request is http.Request && request.body.isNotEmpty) {
       print(request.body);
     }
