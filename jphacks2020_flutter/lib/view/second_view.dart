@@ -22,12 +22,11 @@ class SecondView extends StatefulWidget {
 
 class _SecondViewState extends State<SecondView> {
   bool _isLoading = false, _isInit = true;
-  final StreamController<String> _pageCountController =
-      StreamController<String>();
 
   final commentController = TextEditingController();
   final minuteController = TextEditingController();
   Presentation _presentation;
+  List<Comment> _comments;
 
   @override
   void initState() {
@@ -45,7 +44,7 @@ class _SecondViewState extends State<SecondView> {
     setState(() {
       final jsonResponse = json.decode(jsonString) as Map<String, dynamic>;
       _presentation = Presentation.fromJson(jsonResponse);
-      print(_presentation);
+      _comments = _presentation.comments.where((i) => i.index == 0).toList();
     });
   }
 
@@ -112,11 +111,15 @@ class _SecondViewState extends State<SecondView> {
                                             child: CircularProgressIndicator())
                                         : PDF(
                                             swipeHorizontal: true,
-                                            onPageChanged: (int current,
-                                                    int total) =>
-                                                _pageCountController.add(
-                                                    '${current + 1} '
-                                                    '- $total')).cachedFromUrl(
+                                            onPageChanged:
+                                                (int current, int total) {
+                                              _comments.clear();
+                                              _comments = _presentation.comments
+                                                  .where(
+                                                      (i) => i.index == current)
+                                                  .toList();
+                                              setState(() {});
+                                            }).cachedFromUrl(
                                             _presentation.url,
                                             placeholder: (progress) => Center(
                                                 child: Text('$progress %')),
@@ -130,7 +133,8 @@ class _SecondViewState extends State<SecondView> {
                             SizedBox(
                               height: (constraints.maxHeight - 50) / 2,
                               child: ListView.separated(
-                                itemCount: _presentation.comments.length,
+                                itemCount:
+                                    _comments == null ? 0 : _comments.length,
                                 separatorBuilder:
                                     (BuildContext context, int index) =>
                                         const Divider(
@@ -139,14 +143,28 @@ class _SecondViewState extends State<SecondView> {
                                 itemBuilder: (context, index) {
                                   return ListTile(
                                     tileColor: Colors.white,
-                                    title: Text(
-                                        _presentation.comments[index].text),
-                                    trailing: IconButton(
-                                        icon: const Icon(Icons.thumb_up),
-                                        onPressed: () {
-                                          _plus(_presentation
-                                              .comments[index].commentId);
-                                        }),
+                                    title: Text(_comments[index].text),
+                                    trailing: SizedBox(
+                                      width: constraints.maxWidth / 3,
+                                      child: Row(
+                                        children: [
+                                          SizedBox(
+                                            child: FlatButton(
+                                              child: const Icon(Icons.thumb_up),
+                                              onPressed: () {
+                                                _plus(
+                                                    _comments[index].commentId);
+                                              },
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            child: Text(
+                                                // ignore: lines_longer_than_80_chars
+                                                '${_comments[index].plus.toString()}'),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                   );
                                 },
                               ),
@@ -319,57 +337,3 @@ class _SecondViewState extends State<SecondView> {
     );
   }
 }
-
-// class Post {
-//   int userId;
-//   int id;
-//   String title;
-//   String body;
-//
-//   Post(this.userId, this.id, this.title, this.body);
-//
-//   // Named constructor
-//   Post.fromJson(Map<String, dynamic> json) {
-//     userId = json['userId'] as int;
-//     id = json['id'] as int;
-//     title = json['title'] as String;
-//     body = json['body'] as String;
-//   }
-// }
-
-// class SampleService extends http.BaseClient {
-//   static SampleService _instance;
-//
-//   final _inner = http.Client();
-//
-//   factory SampleService() => _instance ??= SampleService._internal();
-//
-//   SampleService._internal();
-//
-//   @override
-//   Future<http.StreamedResponse> send(http.BaseRequest request) async {
-//     request.headers['User-Agent'] = 'Sample Flutter App.';
-//     print('----- API REQUEST ------');
-//     print(request.toString());
-//     if (request is http.Request && request.body.length > 0) {
-//       print(request.body);
-//     }
-//
-//     return _inner.send(request);
-//   }
-//
-//   /// APIコール
-//   Future<http.Response> getPosts() async {
-//     if (STUB_MODE) {
-//       // スタブ
-//       final res = http.Response(stubPostsResponse, 200, headers: {
-//         HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8'
-//       });
-//       return Future.delayed(const Duration(seconds: 5), () => res);
-//     } else {
-//       // APIサーバアクセス
-//       final url = 'https://jsonplaceholder.typicode.com/posts';
-//       return get(url);
-//     }
-//   }
-// }
