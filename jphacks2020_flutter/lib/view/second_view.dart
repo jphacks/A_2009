@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
+import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 
 import '../model/models.dart';
@@ -143,7 +144,7 @@ class _SecondViewState extends State<SecondView> {
                                     trailing: IconButton(
                                         icon: const Icon(Icons.thumb_up),
                                         onPressed: () {
-                                          //感想に+1
+                                          _plus();
                                         }),
                                   );
                                 },
@@ -161,8 +162,57 @@ class _SecondViewState extends State<SecondView> {
           },
         ),
       ),
-      // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+
+  Future _plus() async {
+    final slideId = _presentation.slideId;
+    final url =
+        'https://52e9bd550f9f.ngrok.io/api/materials/T0JuaLaHVNLhnLkP/comments/hogehoge/plus';
+
+    final resp = await http.post(url);
+    if (resp.statusCode != 422) {
+      final respBody = resp.body;
+      print('$respBody');
+    } else {
+      final statusCode = resp.statusCode;
+      print('Failed to post $statusCode');
+    }
+  }
+
+  Future _impression(String impression) async {
+    final slideId = _presentation.slideId;
+    final url = 'https://52e9bd550f9f.ngrok.io/api/materials/T0JuaLaHVNLhnLkP/impressions';
+
+    final headers = <String, String>{'content-type': 'application/json'};
+    final body = json.encode({'value': '$impression'});
+    final resp = await http.post(url, headers: headers, body: body);
+    if (resp.statusCode != 422) {
+      final respBody = resp.body;
+      print('$respBody');
+    } else {
+      final statusCode = resp.statusCode;
+      print('Failed to post $statusCode');
+    }
+  }
+
+  Future _commentSend(String text) async {
+    final slideId = _presentation.slideId;
+    final url =
+        'https://52e9bd550f9f.ngrok.io/api/materials/T0JuaLaHVNLhnLkP/comments';
+    final headers = <String, String>{'content-type': 'application/json'};
+    final body = json.encode({'text': '$text', 'number': 3});
+
+    print('body: $body');
+
+    final resp = await http.post(url, headers: headers, body: body);
+    if (resp.statusCode != 422) {
+      final respBody = resp.body;
+      print('Failed to post $respBody');
+    } else {
+      final statusCode = resp.statusCode;
+      print('Failed to post $statusCode');
+    }
   }
 
   Future _loadFromAssets() async {
@@ -209,7 +259,7 @@ class _SecondViewState extends State<SecondView> {
             suffixIcon: IconButton(
               icon: const Icon(Icons.send),
               onPressed: () {
-                print(commentController.text);
+                _commentSend(commentController.text);
               },
             ),
           ),
@@ -222,17 +272,18 @@ class _SecondViewState extends State<SecondView> {
     return AlertDialog(
       title: const Text('全体を通しての感想を教えてね'),
       content: SizedBox(
-        height: 240,
+        height: 150,
         child: Column(
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('もっと聞きたい'),
+                const Text('もっと知りたい'),
                 FlatButton(
                   child: const Icon(Icons.favorite),
                   onPressed: () {
-                    //感想をサーバーに送る
+                    _impression('know_more');
+                    Navigator.pop(context);
                   },
                 ),
               ],
@@ -240,11 +291,12 @@ class _SecondViewState extends State<SecondView> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('とても参考になった'),
+                const Text('とても勉強になった'),
                 FlatButton(
                   child: const Icon(Icons.favorite),
                   onPressed: () {
-                    //感想をサーバーに送る
+                    _impression('good');
+                    Navigator.pop(context);
                   },
                 ),
               ],
@@ -256,44 +308,15 @@ class _SecondViewState extends State<SecondView> {
                 FlatButton(
                   child: const Icon(Icons.favorite),
                   onPressed: () {
-                    //感想をサーバーに送る
+                    _impression('interseting');
+                    Navigator.pop(context);
                   },
                 ),
               ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text('愛している'),
-                FlatButton(
-                  child: const Icon(Icons.favorite),
-                  onPressed: () {
-                    //感想をサーバーに送る
-                  },
-                ),
-              ],
-            ),
-            TextField(
-              controller: minuteController,
-              decoration: InputDecoration(
-                hintText: 'コメントや質問を入力してね',
-                suffixIcon: IconButton(
-                  icon: const Icon(Icons.send),
-                  onPressed: () {
-                    print(minuteController.text);
-                  },
-                ),
-              ),
             ),
           ],
         ),
       ),
-      actions: [
-        FlatButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text('OK'),
-        ),
-      ],
     );
   }
 }
