@@ -13,6 +13,8 @@ class HistoryView extends StatefulWidget {
 
 class HistoryViewState extends State<HistoryView> {
   List<ScanItem> _items = [];
+  final items2 = List<String>.generate(5, (i) => 'Item $i');
+  final _historymenu = ['名前の変更', '削除'];
 
   @override
   void initState() {
@@ -45,9 +47,64 @@ class HistoryViewState extends State<HistoryView> {
           title: const Text('Scanner History'),
         ),
         body: ListView.builder(
-            itemCount: _items.length,
+            itemCount: items2.length,
             itemBuilder: (context, index) {
-              return ListTile(title: Text('${_items[index].text}'));
+              return Card(
+                  child: Container(
+                height: 100,
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'title${index}',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 35,
+                              color: Colors.black,
+                            ),
+                          ),
+                          PopupMenuButton<String>(
+                            icon: Icon(Icons.more_vert),
+                            itemBuilder: (BuildContext context) {
+                              return _historymenu.map((String s) {
+                                return PopupMenuItem(
+                                  child: Text(s),
+                                  value: s,
+                                );
+                              }).toList();
+                            },
+                          )
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                         const Text(
+                            '11/03',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                              color: Colors.black,
+                            ),
+                          ),
+                          const Text(
+                            '佐藤 舜',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 30,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              ));
             }));
   }
 }
