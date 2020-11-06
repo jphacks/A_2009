@@ -53,7 +53,7 @@ class FirstView extends StatelessWidget {
               padding: const EdgeInsets.all(20),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  minimumSize: const Size(200, 100),
+                  minimumSize: const Size(100, 100),
                   primary: Colors.blue,
                   onPrimary: Colors.black,
                   shape: RoundedRectangleBorder(
@@ -73,30 +73,6 @@ class FirstView extends StatelessWidget {
                 },
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size(200, 100),
-                  primary: Colors.blue,
-                  onPrimary: Colors.black,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(50),
-                  ),
-                ),
-                child: const Text(
-                  '履歴',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 25,
-                    color: Colors.black,
-                  ),
-                ),
-                onPressed: () {
-                  _moveToSecondView(context);
-                },
-              ),
-            )
           ],
         ),
       ),
@@ -105,9 +81,6 @@ class FirstView extends StatelessWidget {
 
   Future _moveToQrReadView(BuildContext context) => Navigator.push(context,
       MaterialPageRoute<void>(builder: (context) => const QrReadView()));
-
-  Future _moveToSecondView(BuildContext context) => Navigator.push(context,
-      MaterialPageRoute<void>(builder: (context) => SecondView()));
 
   Future _moveToHistoryView(BuildContext context) => Navigator.push(
       context, MaterialPageRoute(builder: (context) => HistoryView()));

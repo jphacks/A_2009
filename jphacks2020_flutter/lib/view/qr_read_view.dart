@@ -6,10 +6,10 @@ import 'package:flutter/services.dart';
 import 'package:jphacks2020/model/api_client.dart';
 import 'package:jphacks2020/model/models.dart';
 import 'package:jphacks2020/model/scan_item.dart';
+import 'package:jphacks2020/view/second_view.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../db/history_db.dart';
-import 'history_view.dart';
 
 class QrReadView extends StatefulWidget {
   const QrReadView({Key key}) : super(key: key);
@@ -28,7 +28,6 @@ class _QrReadViewState extends State<QrReadView> {
       setState(() {
         readData = code.rawContent;
         _insertScanItem(code.rawContent);
-        _moveToHistoryView(context);
       });
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.cameraAccessDenied) {
@@ -45,9 +44,11 @@ class _QrReadViewState extends State<QrReadView> {
     }
   }
 
-  Future _moveToHistoryView(BuildContext context) =>
+  Future _moveToSecondView(BuildContext context, Presentation presentation) =>
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => HistoryView()));
+          context,
+          MaterialPageRoute(
+              builder: (context) => SecondView(presentation: presentation)));
 
   @override
   void initState() {
@@ -59,55 +60,35 @@ class _QrReadViewState extends State<QrReadView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              '読み込めませんでした',
-            ),
-            Text(
-              '$readData',
-              style: Theme
-                  .of(context)
-                  .textTheme
-                  .bodyText1,
-            ),
-            ElevatedButton(
-              child: const Text('もう一度'),
-              style: ElevatedButton.styleFrom(
-                primary: Colors.blue,
-                onPrimary: Colors.black,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              onPressed: _scan,
-            ),
-          ],
-        ),
+      body: const Center(
+        child: CircularProgressIndicator(),
       ),
     );
   }
 
-  Presentation _presentation;
-
   Future _insertScanItem(String url) async {
+    Presentation presentation;
+
     await ApiClient().getPosts(url).then((response) {
       final jsonResponse = json.decode(response.body) as Map<String, dynamic>;
-      _presentation = Presentation.fromJson(jsonResponse);
-      print(_presentation.url);
+      presentation = Presentation.fromJson(jsonResponse);
+      _moveToSecondView(context, presentation);
+      _save(presentation);
+      print(presentation.url);
     });
+  }
 
+  Future _save(Presentation presentation) async {
     final path = await getDatabaseFilePath(dbName);
     final db = await openDatabase(path, version: 1,
         onCreate: (Database db, int version) async {
-          await db.execute(
-              'CREATE TABLE $tableName (id INTEGER PRIMARY KEY, text TEXT)');
-        });
+      await db.execute(
+          'CREATE TABLE $tableName (id INTEGER PRIMARY KEY, text TEXT)');
+    });
 
     await db.transaction((t) async {
-      final i = await t.insert(tableName, ScanItem.fromQR(url).toMap());
+      final i =
+          await t.insert(tableName, ScanItem.fromQR(presentation.url).toMap());
       print(i);
     });
 

@@ -3,11 +3,6 @@ import 'package:uuid/uuid.dart';
 class Comment {
   Comment(this.commentId, this.text, this.index, this.plus);
 
-  Comment.newComment({String newText}) {
-    commentId = Uuid().v4();
-    text = newText;
-  }
-
   Comment.fromJson(Map<String, dynamic> json) {
     commentId = json['uuid'] as String;
     text = json['text'] as String;

@@ -1,51 +1,34 @@
 import 'dart:async';
 import 'dart:convert'; //httpレスポンスをJSON形式に変換用
-import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
 import 'package:http/http.dart' as http;
-import 'package:path_provider/path_provider.dart';
 
 import '../model/models.dart';
 
 class SecondView extends StatefulWidget {
-  const SecondView({Key key, this.title}) : super(key: key);
+  const SecondView({Key key, this.presentation}) : super(key: key);
 
-  final String title;
+  final Presentation presentation;
 
   @override
   _SecondViewState createState() => _SecondViewState();
 }
 
 class _SecondViewState extends State<SecondView> {
-  bool _isLoading = false, _isInit = true;
-
   final commentController = TextEditingController();
   final minuteController = TextEditingController();
-  Presentation _presentation;
-  List<Comment> _comments;
+  List<Comment> _comments = <Comment>[];
+  int _currentPage;
 
   @override
   void initState() {
-    _loadFromAssets();
-    _getLocalTestJSONData();
     super.initState();
-  }
-
-  Future<String> _loadAVaultAsset() async {
-    return rootBundle.loadString('json/api_name.json');
-  }
-
-  Future _getLocalTestJSONData() async {
-    final jsonString = await _loadAVaultAsset();
-    setState(() {
-      final jsonResponse = json.decode(jsonString) as Map<String, dynamic>;
-      _presentation = Presentation.fromJson(jsonResponse);
-      _comments = _presentation.comments.where((i) => i.index == 0).toList();
-    });
+    _comments =
+        widget.presentation.comments.where((i) => i.index == 1).toList();
   }
 
   @override
@@ -65,7 +48,8 @@ class _SecondViewState extends State<SecondView> {
             child: FlatButton(
               child: const Icon(Icons.refresh),
               onPressed: () {
-                _loadFromAssets();
+                // _loadFromAssets();
+                //TODO
               },
             ),
           ),
@@ -91,91 +75,79 @@ class _SecondViewState extends State<SecondView> {
           builder: (BuildContext context, BoxConstraints constraints) {
             return GestureDetector(
               onTap: () => FocusScope.of(context).unfocus(),
-              child: Container(
-                color: Colors.white,
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: SingleChildScrollView(
-                        physics: const NeverScrollableScrollPhysics(),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            SizedBox(
-                              height: (constraints.maxHeight - 50) / 2,
-                              child: Center(
-                                child: _isInit
-                                    ? const Text('please load PDF')
-                                    : _isLoading
-                                        ? const Center(
-                                            child: CircularProgressIndicator())
-                                        : PDF(
-                                            swipeHorizontal: true,
-                                            onPageChanged:
-                                                (int current, int total) {
-                                              _comments.clear();
-                                              _comments = _presentation.comments
-                                                  .where(
-                                                      (i) => i.index == current)
-                                                  .toList();
-                                              setState(() {});
-                                            }).cachedFromUrl(
-                                            _presentation.url,
-                                            placeholder: (progress) => Center(
-                                                child: Text('$progress %')),
-                                            errorWidget: (dynamic error) =>
-                                                Center(
-                                                    child:
-                                                        Text(error.toString())),
-                                          ),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                      physics: const NeverScrollableScrollPhysics(),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          SizedBox(
+                            height: (constraints.maxHeight - 50) / 3,
+                            child: Center(
+                              child: PDF(
+                                  swipeHorizontal: true,
+                                  onPageChanged: (int current, int total) {
+                                    _comments.clear();
+                                    _comments = widget.presentation.comments
+                                        .where((i) => i.index == current + 1)
+                                        .toList();
+                                    setState(() {
+                                      _currentPage = current;
+                                    });
+                                  }).cachedFromUrl(
+                                widget.presentation.url,
+                                placeholder: (progress) =>
+                                    Center(child: Text('$progress %')),
+                                errorWidget: (dynamic error) =>
+                                    Center(child: Text(error.toString())),
                               ),
                             ),
-                            SizedBox(
-                              height: (constraints.maxHeight - 50) / 2,
-                              child: ListView.separated(
-                                itemCount:
-                                    _comments == null ? 0 : _comments.length,
-                                separatorBuilder:
-                                    (BuildContext context, int index) =>
-                                        const Divider(
-                                  color: Colors.black,
-                                ),
-                                itemBuilder: (context, index) {
-                                  return ListTile(
-                                    tileColor: Colors.white,
-                                    title: Text(_comments[index].text),
-                                    trailing: SizedBox(
-                                      width: constraints.maxWidth / 3,
-                                      child: Row(
-                                        children: [
-                                          SizedBox(
-                                            child: FlatButton(
-                                              child: const Icon(Icons.thumb_up),
-                                              onPressed: () {
-                                                _plus(
-                                                    _comments[index].commentId);
-                                              },
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            child: Text(
-                                                // ignore: lines_longer_than_80_chars
-                                                '${_comments[index].plus.toString()}'),
-                                          ),
-                                        ],
-                                      ),
+                          ),
+                          SizedBox(
+                            height: (constraints.maxHeight - 50) * 2 / 3,
+                            child: ListView.separated(
+                              itemCount: _comments.length,
+                              separatorBuilder:
+                                  (BuildContext context, int index) =>
+                                      const Divider(
+                                color: Colors.black,
+                              ),
+                              itemBuilder: (context, index) {
+                                return ListTile(
+                                  // tileColor: Colors.white,
+                                  title: Text(_comments[index].text),
+                                  trailing: SizedBox(
+                                    width: 70,
+                                    child: Row(
+                                      children: [
+                                        IconButton(
+                                          icon: const Icon(Icons.thumb_up),
+                                          onPressed: () {
+                                            setState(() {
+                                              _comments[index].plus += 1;
+                                            });
+                                            _plus(_comments[index].commentId);
+                                          },
+                                          splashColor: Colors.blue,
+                                        ),
+                                        Text(
+                                            // ignore: lines_longer_than_80_chars
+                                            '${_comments[index].plus.toString()}'),
+                                      ],
                                     ),
-                                  );
-                                },
-                              ),
+                                  ),
+                                );
+                              },
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
-                    _textWidget(),
-                  ],
-                ),
+                  ),
+                  _textWidget(),
+                ],
               ),
             );
           },
@@ -185,7 +157,7 @@ class _SecondViewState extends State<SecondView> {
   }
 
   Future _plus(String uuid) async {
-    final slideId = _presentation.slideId;
+    final slideId = widget.presentation.slideId;
     final url = '$ngrokUrl/api/materials/$slideId/comments/$uuid/plus';
 
     final resp = await http.post(url);
@@ -199,7 +171,7 @@ class _SecondViewState extends State<SecondView> {
   }
 
   Future _impression(String impression) async {
-    final slideId = _presentation.slideId;
+    final slideId = widget.presentation.slideId;
     final url = '$ngrokUrl/api/materials/$slideId/impressions';
 
     final headers = <String, String>{'content-type': 'application/json'};
@@ -215,51 +187,26 @@ class _SecondViewState extends State<SecondView> {
   }
 
   Future _commentSend(String text) async {
-    final slideId = _presentation.slideId;
+    final slideId = widget.presentation.slideId;
     final url = '$ngrokUrl/api/materials/$slideId/comments';
     final headers = <String, String>{'content-type': 'application/json'};
-    final body = json.encode({'text': '$text', 'number': 3});
-
-    print('body: $body');
+    final body = json.encode({'text': '$text', 'number': _currentPage + 1});
 
     final resp = await http.post(url, headers: headers, body: body);
     if (resp.statusCode != 422) {
-      final respBody = resp.body;
-      print('Failed to post $respBody');
+      final jsonResponse = json.decode(resp.body) as Map<String, dynamic>;
+      final comment = jsonResponse['comment'] as Map<String, dynamic>;
+      setState(() {
+        widget.presentation.comments.insert(0, Comment.fromJson(comment));
+        _comments = widget.presentation.comments
+            .where((i) => i.index == _currentPage + 1)
+            .toList();
+      });
+      print('Failed to post $jsonResponse');
     } else {
       final statusCode = resp.statusCode;
       print('Failed to post $statusCode');
     }
-  }
-
-  Future _loadFromAssets() async {
-    setState(() {
-      _isInit = false;
-      _isLoading = true;
-    });
-
-    await _fromAsset('assets/sample.pdf', 'sample.pdf').then((f) {
-      setState(() {
-        _isLoading = false;
-      });
-    });
-  }
-
-  Future<File> _fromAsset(String asset, String filename) async {
-    final completer = Completer<File>();
-
-    try {
-      final dir = await getApplicationDocumentsDirectory();
-      final file = File('${dir.path}/$filename');
-      final data = await rootBundle.load(asset);
-      final bytes = data.buffer.asUint8List();
-      await file.writeAsBytes(bytes, flush: true);
-      completer.complete(file);
-    } on Exception catch (e) {
-      throw Exception('$e');
-    }
-
-    return completer.future;
   }
 
   Widget _textWidget() {
@@ -277,6 +224,8 @@ class _SecondViewState extends State<SecondView> {
               icon: const Icon(Icons.send),
               onPressed: () {
                 _commentSend(commentController.text);
+                FocusScope.of(context).unfocus();
+                commentController.text = '';
               },
             ),
           ),
