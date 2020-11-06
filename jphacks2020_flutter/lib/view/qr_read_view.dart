@@ -1,10 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/services.dart';
-import 'package:jphacks2020/scan_item.dart';
+import 'package:jphacks2020/model/api_client.dart';
+import 'package:jphacks2020/model/models.dart';
+import 'package:jphacks2020/model/scan_item.dart';
 import 'package:sqflite/sqflite.dart';
 
-import 'history_db.dart';
+import '../db/history_db.dart';
+import 'history_view.dart';
 
 class QrReadView extends StatefulWidget {
   const QrReadView({Key key}) : super(key: key);
@@ -16,13 +21,14 @@ class QrReadView extends StatefulWidget {
 class _QrReadViewState extends State<QrReadView> {
   String readData = '';
 
-  Future scan() async {
+  Future _scan() async {
     try {
       final code = await BarcodeScanner.scan();
 
       setState(() {
         readData = code.rawContent;
         _insertScanItem(code.rawContent);
+        _moveToHistoryView(context);
       });
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.cameraAccessDenied) {
@@ -39,10 +45,14 @@ class _QrReadViewState extends State<QrReadView> {
     }
   }
 
+  Future _moveToHistoryView(BuildContext context) =>
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => HistoryView()));
+
   @override
   void initState() {
     super.initState();
-    scan();
+    _scan();
   }
 
   @override
@@ -58,7 +68,10 @@ class _QrReadViewState extends State<QrReadView> {
             ),
             Text(
               '$readData',
-              style: Theme.of(context).textTheme.bodyText1,
+              style: Theme
+                  .of(context)
+                  .textTheme
+                  .bodyText1,
             ),
             ElevatedButton(
               child: const Text('もう一度'),
@@ -69,7 +82,7 @@ class _QrReadViewState extends State<QrReadView> {
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
-              onPressed: scan,
+              onPressed: _scan,
             ),
           ],
         ),
@@ -77,16 +90,24 @@ class _QrReadViewState extends State<QrReadView> {
     );
   }
 
-  Future _insertScanItem(String code) async {
+  Presentation _presentation;
+
+  Future _insertScanItem(String url) async {
+    await ApiClient().getPosts(url).then((response) {
+      final jsonResponse = json.decode(response.body) as Map<String, dynamic>;
+      _presentation = Presentation.fromJson(jsonResponse);
+      print(_presentation.url);
+    });
+
     final path = await getDatabaseFilePath(dbName);
     final db = await openDatabase(path, version: 1,
         onCreate: (Database db, int version) async {
-      await db.execute(
-          'CREATE TABLE $tableName (id INTEGER PRIMARY KEY, text TEXT)');
-    });
+          await db.execute(
+              'CREATE TABLE $tableName (id INTEGER PRIMARY KEY, text TEXT)');
+        });
 
     await db.transaction((t) async {
-      final i = await t.insert(tableName, ScanItem.fromQR(code).toMap());
+      final i = await t.insert(tableName, ScanItem.fromQR(url).toMap());
       print(i);
     });
 

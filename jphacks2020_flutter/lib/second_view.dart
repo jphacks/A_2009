@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:convert';//httpレスポンスをJSON形式に変換用
+import 'dart:convert'; //httpレスポンスをJSON形式に変換用
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
@@ -9,6 +9,7 @@ import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 
+import 'model/models.dart';
 import 'stub.dart';
 
 class SecondView extends StatefulWidget {
@@ -21,26 +22,32 @@ class SecondView extends StatefulWidget {
 }
 
 class _SecondViewState extends State<SecondView> {
-  List<Post> posts = [];
   bool _isLoading = false, _isInit = true;
   final StreamController<String> _pageCountController =
       StreamController<String>();
 
   final commentController = TextEditingController();
   final minuteController = TextEditingController();
+  Presentation _presentation;
 
   @override
   void initState() {
     _loadFromAssets();
-    SampleService().getPosts().then((response) {
-      final list = json.decode(response.body);
-      if (list is List) {
-        setState(() {
-          posts = list.map((post) => Post.fromJson(post)).toList();
-        });
-      }
-    });
+    _getLocalTestJSONData();
     super.initState();
+  }
+
+  Future<String> _loadAVaultAsset() async {
+    return rootBundle.loadString('json/api_name.json');
+  }
+
+  Future _getLocalTestJSONData() async {
+    final jsonString = await _loadAVaultAsset();
+    setState(() {
+      final jsonResponse = json.decode(jsonString) as Map<String, dynamic>;
+      _presentation = Presentation.fromJson(jsonResponse);
+      print(_presentation);
+    });
   }
 
   @override
@@ -110,7 +117,7 @@ class _SecondViewState extends State<SecondView> {
                                                           .add('${current + 1} '
                                                               '- $total'))
                                           .cachedFromUrl(
-                                          'https://a-2009-jphacks--2020-s3.s3-ap-northeast-1.amazonaws.com/uploads/material/1__tNY0w0GRlbfLvg58__url/JPHACKS__Vele.pdf',
+                                          _presentation.url,
                                           placeholder: (progress) => Center(
                                               child: Text('$progress %')),
                                           errorWidget: (dynamic error) =>
@@ -123,7 +130,7 @@ class _SecondViewState extends State<SecondView> {
                           SizedBox(
                             height: (constraints.maxHeight - 50) / 2,
                             child: ListView.separated(
-                              itemCount: posts.length,
+                              itemCount: _presentation.comments.length,
                               separatorBuilder:
                                   (BuildContext context, int index) =>
                                       const Divider(
@@ -132,7 +139,8 @@ class _SecondViewState extends State<SecondView> {
                               itemBuilder: (context, index) {
                                 return ListTile(
                                   tileColor: Colors.white,
-                                  title: Text(posts[index].body),
+                                  title:
+                                      Text(_presentation.comments[index].text),
                                   trailing: Container(
                                     child: FlatButton(
                                       child: const Icon(Icons.thumb_up),
@@ -287,56 +295,56 @@ class _SecondViewState extends State<SecondView> {
   }
 }
 
-class Post {
-  int userId;
-  int id;
-  String title;
-  String body;
+// class Post {
+//   int userId;
+//   int id;
+//   String title;
+//   String body;
+//
+//   Post(this.userId, this.id, this.title, this.body);
+//
+//   // Named constructor
+//   Post.fromJson(Map<String, dynamic> json) {
+//     userId = json['userId'] as int;
+//     id = json['id'] as int;
+//     title = json['title'] as String;
+//     body = json['body'] as String;
+//   }
+// }
 
-  Post(this.userId, this.id, this.title, this.body);
-
-  // Named constructor
-  Post.fromJson(Map<String, dynamic> json) {
-    userId = json['userId'] as int;
-    id = json['id'] as int;
-    title = json['title'] as String;
-    body = json['body'] as String;
-  }
-}
-
-class SampleService extends http.BaseClient {
-  static SampleService _instance;
-
-  final _inner = http.Client();
-
-  factory SampleService() => _instance ??= SampleService._internal();
-
-  SampleService._internal();
-
-  @override
-  Future<http.StreamedResponse> send(http.BaseRequest request) async {
-    request.headers['User-Agent'] = 'Sample Flutter App.';
-    print('----- API REQUEST ------');
-    print(request.toString());
-    if (request is http.Request && request.body.length > 0) {
-      print(request.body);
-    }
-
-    return _inner.send(request);
-  }
-
-  /// APIコール
-  Future<http.Response> getPosts() async {
-    if (STUB_MODE) {
-      // スタブ
-      final res = http.Response(stubPostsResponse, 200, headers: {
-        HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8'
-      });
-      return Future.delayed(const Duration(seconds: 5), () => res);
-    } else {
-      // APIサーバアクセス
-      final url = 'https://jsonplaceholder.typicode.com/posts';
-      return get(url);
-    }
-  }
-}
+// class SampleService extends http.BaseClient {
+//   static SampleService _instance;
+//
+//   final _inner = http.Client();
+//
+//   factory SampleService() => _instance ??= SampleService._internal();
+//
+//   SampleService._internal();
+//
+//   @override
+//   Future<http.StreamedResponse> send(http.BaseRequest request) async {
+//     request.headers['User-Agent'] = 'Sample Flutter App.';
+//     print('----- API REQUEST ------');
+//     print(request.toString());
+//     if (request is http.Request && request.body.length > 0) {
+//       print(request.body);
+//     }
+//
+//     return _inner.send(request);
+//   }
+//
+//   /// APIコール
+//   Future<http.Response> getPosts() async {
+//     if (STUB_MODE) {
+//       // スタブ
+//       final res = http.Response(stubPostsResponse, 200, headers: {
+//         HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8'
+//       });
+//       return Future.delayed(const Duration(seconds: 5), () => res);
+//     } else {
+//       // APIサーバアクセス
+//       final url = 'https://jsonplaceholder.typicode.com/posts';
+//       return get(url);
+//     }
+//   }
+// }
