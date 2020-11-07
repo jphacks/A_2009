@@ -25,12 +25,20 @@
 * 特になし
 
 #### フレームワーク・ライブラリ・モジュール
-* Ruby on Rails (バックエンド)
-* Vue.js (Webフロントエンド)
+* Ruby on Rails (バックエンド) [詳細](https://github.com/jphacks/A_2009/blob/server_master/jphacks_server/README.md)
+* Vue.js (Webフロントエンド) - [ディレクトリ](https://github.com/jphacks/A_2009/tree/server_master/jphacks_server/app/frontend)
 * Flutter
 
+- DB
+  - MySQL ver5.7
+- 開発環境
+  - Docker
+- 外部サービス
+  - AWS S3
+
+
 #### デバイス
-* Native
+* Native (iOS・Android)
 * Webブラウザ
 
 ### 独自技術
@@ -42,6 +50,7 @@
   - AWS S3にPDFファイルのアップロード処理
   - QRコードの表示
   - 管理画面の作成
+  - templateエンジンでなるべく簡素に
 
 #### 製品に取り入れた研究内容（データ・ソフトウェアなど）（※アカデミック部門の場合のみ提出必須）
 * 
