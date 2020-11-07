@@ -1,5 +1,15 @@
 Rails.application.routes.draw do
-  resources :materials
+  resources :materials, param: :uuid do
+    resources :comments, only: %i[index]
+  end
   root to: 'home#index'
-  # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
+
+  namespace :api, format: "json" do
+    resources :materials, only: %i[show], param: :uuid do
+      resources :comments, only: %i[index create], param: :uuid do
+        post :plus
+      end
+      resources :impressions, only: %i[create]
+    end
+  end
 end

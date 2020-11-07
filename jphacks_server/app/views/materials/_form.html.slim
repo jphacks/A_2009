@@ -1,0 +1,33 @@
+= form_with(model: material, local: true, class: 'material__form') do |form|
+  - if material.errors.any?
+    #error_explanation
+      h2
+        = pluralize(material.errors.count, "error")
+        |  prohibited this material from being saved:
+      ul
+        - material.errors.full_messages.each do |message|
+          li
+            = message
+  .input-field.col
+    i class="material-icons prefix" book
+    = form.text_field :title, for: 'material__form__title__icon'
+    = form.label :title, id: "material__form__title__icon"
+  .input-field.col
+    i class="material-icons prefix" account_circle
+    = form.text_field :author, id: "material__form__author__icon"
+    = form.label :author, for: 'material__form__author__icon'
+  .file-field.input-field.col
+    .btn(color="")
+      span
+        | 発表資料
+      = form.file_field :url, style: 'padding-left: 150px'
+    .file-path-wrapper
+      input class="file-path validate" type="text" placeholder="PDF版をアップロード"
+  .input-field.col
+    i class="material-icons prefix" lock_outline
+    = form.text_field :password_digest, id: "material__form__password__icon"
+    = form.label :password_digest, for: 'material__form__password__icon'
+    span(class="helper-text" data-error="wrong" data-success="right" style="color:#82da99") 資料をアクセスする際に必要なパスワードです
+  .actions
+    = form.submit class: 'btn btn-primary', style: 'margin:0 auto;'
+

@@ -1,0 +1,53 @@
+.material__show
+  .container
+    .col
+      .material__show__qrcode
+        p(style="text-align:center;")
+          = qrcode_tag "https://52e9bd550f9f.ngrok.io/api/materials/#{material&.uuid}/comments"
+      p.material__show__title
+        strong
+          | タイトル
+        | :  
+        = material&.title
+      p.material__show__title
+        strong
+          | 作成者
+        | :  
+        = material&.author
+      p.material__show__title
+        strong
+          | 作成日時
+        | :   
+        = material.created_at.strftime("%Y/%m/%d %H:%M:%S")
+      = link_to("コメント一覧", material_comments_path(material&.uuid), class: 'btn waves-effect waves-light')
+p#notice
+  = notice
+/ p
+/   strong
+/     | Uuid:
+/   = material.uuid
+/ p
+/   strong
+/     | Url:
+/   a href=material.url target='_blank'
+/     = material.url
+/ p
+/   strong
+/     | Author:
+/   = material.author
+/ p
+/   strong
+/     | Password digest:
+/   = material.password_digest
+/ p
+/   strong
+/     | Title:
+/   = material.title
+
+/ p
+/   strong
+/     | QRコード:
+/   = qrcode_tag "#{ENV['NGROK_URL']}/api/materials/#{material&.uuid}/comments"
+= link_to 'Edit', edit_material_path(material&.uuid)
+|  | 
+= link_to 'Back', materials_path

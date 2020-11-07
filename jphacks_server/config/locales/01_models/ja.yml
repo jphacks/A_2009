@@ -1,0 +1,26 @@
+ja:
+  activerecord:
+    models:
+      material: 発表資料
+      comment: コメント
+      impression: 感想
+    attributes:
+      material:
+        id: ID
+        uuid: ユニークID
+        title: タイトル
+        author: 作成者名
+        password_digest: パスワード
+        url: 資料
+      comment:
+        id: ID
+        uuid: ユニーク
+        text: メッセージ
+        count: いいね数
+        number: ページ番号
+      impression:
+        id: ID
+        value: 内容
+  attributes:
+    created_at: 作成日
+    updated_at: 更新日

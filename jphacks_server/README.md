@@ -1,24 +1,51 @@
-# README
+# Vele ServerSide README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
-
-Things you may want to cover:
+<img src="app/assets/images/logo.png" width="480">
 
 * Ruby version
 
-* System dependencies
+  - 2.7.1
 
-* Configuration
+* フレームワーク
 
-* Database creation
+  - Ruby on Rails
+  - Vue.js
 
-* Database initialization
+* Ruby on Rails Version
 
-* How to run the test suite
+  - 6.0.3.4
 
-* Services (job queues, cache servers, search engines, etc.)
+* Vue.js Version
 
-* Deployment instructions
+  - 2.6.12
 
-* ...
+* 外部サービス
+
+  - AWS S3
+
+* 開発環境
+
+  - Docker
+
+* 主なライブラリ
+
+  - Rails
+
+    - slim (templateエンジン)
+    - carrierwave (画像アップロード用)
+    - rqrcode  (QRコード生成)
+    - trestle  (管理画面)
+  
+  - Veu.js
+  
+    - materialize (CSSフレームワーク)
+    - pug (templateエンジン)
+
+* 環境構築
+
+  ```bash
+    $ bundle install -j4
+    $ docker-compose up -d
+    $ bundle exec rails s -b 0.0.0.0
+    $ bin/webpack-dev-server
+  ```

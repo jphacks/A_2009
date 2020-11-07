@@ -1,0 +1,33 @@
+// Place all the styles related to the materials controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: https://sass-lang.com/
+
+.material__form {
+  width: 500px;
+  margin: 10px auto;
+}
+
+.material__show {
+  max-width: 540px;
+  margin: 0 auto;
+  @media screen and (min-width:480px) {
+    width: 90%;
+  }
+
+  @media screen and (min-width:480px) and ( max-width:600px) {
+    width: 90%;
+  }
+
+  @media screen and (min-width:600px) and ( max-width:768px) {
+    width: 500px;
+  }
+
+  .material__show__title {
+    padding: 5px 0;
+  }
+
+  .material__show__qrcode {
+    margin: 0 auto;
+    padding: 20px 0;
+  }
+}

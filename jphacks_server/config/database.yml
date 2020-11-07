@@ -9,14 +9,14 @@ default: &default
 
 development:
   <<: *default
-  database: jphacks_server_development
+  database: vele_development
 
 test:
   <<: *default
-  database: jphacks_server_test
+  database: vele_server_test
 
 production:
   <<: *default
-  database: jphacks_server_production
-  username: jphacks_server
-  password: <%= ENV['JPHACKS_SERVER_DATABASE_PASSWORD'] %>
+  database: vele_server_production
+  username: vele_server
+  password: <%= ENV['VELE_SERVER_DATABASE_PASSWORD'] %>

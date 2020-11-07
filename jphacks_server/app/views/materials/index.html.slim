@@ -1,0 +1,37 @@
+p#notice
+  = notice
+h1
+  | Materials
+table
+  thead
+    tr
+      th
+        | Uuid
+      th
+        | Url
+      th
+        | Author
+      th
+        | Title
+      th[colspan="3"]
+  tbody
+    - @materials.each do |material|
+      tr
+        td
+          = material.uuid
+        td
+          a href=material.url target='_blank'
+            = material.url
+          object data=material.url type="application/pdf" height="300"
+        td
+          = material.author
+        td
+          = material.title
+        td
+          = link_to 'Show', material_path(material.uuid)
+        td
+          = link_to 'Edit', edit_material_path(material.uuid)
+        td
+          = link_to 'Destroy', material.uuid, method: :delete, data: { confirm: 'Are you sure?' }
+br
+= link_to 'New Material', new_material_path
