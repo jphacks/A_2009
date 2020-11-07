@@ -20,7 +20,6 @@ module Api
   
       def impression_params
         params
-          .require(:impression)
           .permit(
             :value
           )

@@ -1,6 +1,6 @@
 class CommentsController < ApplicationController
   def index
-    @comments = material.comments.order(created_at: :desc)
+    @comments = material.comments.order(number: :asc)
   end
 
   private

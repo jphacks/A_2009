@@ -2,9 +2,9 @@ p#notice
   = notice
 .container
   .row
-    .col.s6
-      object data=material.url type="application/pdf" width="500" height="680" style="margin:0 auto;"
-    .col.s6
+    .col.s4
+      object data=material.url type="application/pdf" width="360" height="680" style="margin:0 auto;"
+    .col.s4
       h3(style="text-align:center;") コメント一覧
       ul class="collection with-header"
         - @comments.each do |comment|
@@ -18,6 +18,7 @@ p#notice
             p.comment__index__page__count
               i class="material-icons" favorite
               = comment.count
+    .col.s4
       h3(style="text-align:center;") 感想
       table.centered.striped(style="margin:0 auto;min-width:480px")
         thead

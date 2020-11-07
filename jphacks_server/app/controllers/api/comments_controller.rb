@@ -16,9 +16,9 @@ module Api
     end
 
     def plus
-      render json: { message: '予期せぬエラーが起こりました' }, status: :unprocessable_entity and return if !plus_params[:plus] || comment_for_plus.nil?
+      render json: { message: '予期せぬエラーが起こりました' }, status: :unprocessable_entity and return unless comment_for_plus.present?
 
-      count = @comment.count + 1
+      count = comment_for_plus.count + 1
       if @comment.update(count: count)
         render :show, format: :json, status: :ok
       else
@@ -34,31 +34,19 @@ module Api
     helper_method :material
 
     def comment_for_plus
-      @comment ||= Comment.where(uuid: params[:comment_uuid])&.find_by(number: plus_params[:number])
+      @comment ||= Comment.find_by(uuid: params[:comment_uuid])
     end
 
     def comment_params
       params
-        .require(:comment)
         .permit(
           :text,
-          :number,
-          :material_uuid
+          :number
         )
         .merge(
           uuid: SecureRandom.alphanumeric(),
           count: 0,
           material_id: material&.id
-        )
-    end
-
-    def plus_params
-      params
-        .require(:comment)
-        .permit(
-          :number,
-          :plus,
-          :comment_uuid
         )
     end
   end
