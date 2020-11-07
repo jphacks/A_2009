@@ -1,6 +1,6 @@
 # Vele
 
-<img src="jphacks_server/app/assets/images/logo.png" width="480">
+[![IMAGE ALT TEXT HERE](jphacks_server/app/assets/images/logo.png)](https://youtu.be/whqDKI75sJM)
 
 ## 製品概要
 ### 背景(製品開発のきっかけ、課題等）
