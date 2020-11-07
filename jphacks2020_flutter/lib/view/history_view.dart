@@ -30,7 +30,6 @@ class HistoryList extends StatefulWidget {
 
 class HistoryListState extends State<HistoryList> {
   List<ScanItem> _items = [];
-  final _historyMenu = ['名前の変更', '削除'];
 
   @override
   void initState() {
@@ -39,10 +38,11 @@ class HistoryListState extends State<HistoryList> {
   }
 
   Future _initDatabase() async {
-    final path = await getDatabaseFilePath(dbName);
+    final path = await DBProvider.getDatabaseFilePath();
     final db = await openReadOnlyDatabase(path);
 
-    final List<Map> data = await db.query(tableName, columns: [
+    final List<Map> data = await db
+        .query(DBProvider.tableName, groupBy: ScanItem.columnUrl, columns: [
       ScanItem.columnTitle,
       ScanItem.columnUrl,
       ScanItem.columnDate,
@@ -88,17 +88,7 @@ class HistoryListState extends State<HistoryList> {
                             color: Colors.black,
                           ),
                         ),
-                        PopupMenuButton<String>(
-                          icon: const Icon(Icons.more_vert),
-                          itemBuilder: (BuildContext context) {
-                            return _historyMenu.map((String s) {
-                              return PopupMenuItem(
-                                child: Text(s),
-                                value: s,
-                              );
-                            }).toList();
-                          },
-                        )
+                        _menuButton(_items[index].url)
                       ],
                     ),
                     Row(
@@ -158,11 +148,27 @@ class HistoryListState extends State<HistoryList> {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => SecondView(
-                    presentation: presentation,
-                    url: url,
-                    isFromQr: false,
-                  )));
+              builder: (context) =>
+                  SecondView(presentation: presentation, url: url)));
+
+  Widget _menuButton(String url) => PopupMenuButton<PopUpMenuType>(
+        onSelected: (PopUpMenuType type) {
+          switch (type) {
+            case PopUpMenuType.delete:
+              DBProvider.db
+                  .deleteScanItem(url)
+                  .then((dynamic value) => setState(_initDatabase));
+              break;
+          }
+        },
+        itemBuilder: (BuildContext context) => <PopupMenuEntry<PopUpMenuType>>[
+          const PopupMenuItem<PopUpMenuType>(
+            value: PopUpMenuType.delete,
+            child: Text('削除'),
+          ),
+        ],
+        icon: const Icon(Icons.more_vert),
+      );
 }
 
-enum PopUpMenuType { edit, delete }
+enum PopUpMenuType { delete }

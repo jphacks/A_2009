@@ -14,13 +14,11 @@ class SecondView extends StatefulWidget {
   const SecondView(
       {Key key,
       @required this.presentation,
-      @required this.url,
-      @required this.isFromQr})
+      @required this.url})
       : super(key: key);
 
   final Presentation presentation;
   final String url;
-  final bool isFromQr;
 
   @override
   _SecondViewState createState() => _SecondViewState();
@@ -46,9 +44,7 @@ class _SecondViewState extends State<SecondView> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
           onPressed: () {
-            widget.isFromQr
-                ? Navigator.of(context).popUntil((route) => route.isFirst)
-                : Navigator.pop(context);
+            Navigator.pop(context);
           },
         ),
         title: const Text('JPHacks2020'),
