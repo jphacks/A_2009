@@ -6,18 +6,46 @@
 
   - 2.7.1
 
-* System dependencies
+* フレームワーク
 
-* Configuration
+  - Ruby on Rails
+  - Vue.js
 
-* Database creation
+* Ruby on Rails Version
 
-* Database initialization
+  - 6.0.3.4
 
-* How to run the test suite
+* Vue.js Version
 
-* Services (job queues, cache servers, search engines, etc.)
+  - 2.6.12
 
-* Deployment instructions
+* 外部サービス
 
-* ...
+  - AWS S3
+
+* 開発環境
+
+  - Docker
+
+* 主なライブラリ
+
+  - Rails
+
+    - slim (templateエンジン)
+    - carrierwave (画像アップロード用)
+    - rqrcode  (QRコード生成)
+    - trestle  (管理画面)
+  
+  - Veu.js
+  
+    - materialize (CSSフレームワーク)
+    - pug (templateエンジン)
+
+* 環境構築
+
+  ```bash
+    $ bundle install -j4
+    $ docker-compose up -d
+    $ bundle exec rails s -b 0.0.0.0
+    $ bin/webpack-dev-server
+  ```
