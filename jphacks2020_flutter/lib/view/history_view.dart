@@ -14,7 +14,7 @@ class HistoryView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Scanner History'),
+        title: const Text('履歴'),
       ),
       body: HistoryList(),
     );
@@ -66,57 +66,63 @@ class HistoryListState extends State<HistoryList> {
     return ListView.builder(
         itemCount: _items.length,
         itemBuilder: (context, index) {
-          return Card(
-              child: InkWell(
-            onTap: () {
-              _didTapCard(context, _items[index].url);
-            },
-            child: SizedBox(
-              height: 100,
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
+          return Padding(
+            padding: const EdgeInsets.only(left: 8, right: 8, top: 4),
+            child: Card(
+                child: InkWell(
+              onTap: () {
+                _didTapCard(context, _items[index].url);
+              },
+              child: SizedBox(
+                height: 100,
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 8, right: 8),
+                    child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          _items[index].title,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 35,
-                            color: Colors.black,
-                          ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              _items[index].title,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 32,
+                                color: Colors.black,
+                              ),
+                            ),
+                            _menuButton(_items[index].url)
+                          ],
                         ),
-                        _menuButton(_items[index].url)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              dateFormat.format(_items[index].date),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                                color: Colors.black,
+                              ),
+                            ),
+                            Text(
+                              _items[index].author,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 25,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ],
+                        )
                       ],
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          dateFormat.format(_items[index].date),
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                            color: Colors.black,
-                          ),
-                        ),
-                        Text(
-                          _items[index].author,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 30,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ],
-                    )
-                  ],
+                  ),
                 ),
               ),
-            ),
-          ));
+            )),
+          );
         });
   }
 

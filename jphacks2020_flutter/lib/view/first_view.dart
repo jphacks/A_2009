@@ -135,8 +135,8 @@ class FirstView extends StatelessWidget {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => SecondView(
-                  presentation: presentation, url: url)));
+              builder: (context) =>
+                  SecondView(presentation: presentation, url: url)));
 
   Future _moveToHistoryView(BuildContext context) => Navigator.push(
       context, MaterialPageRoute(builder: (context) => HistoryView()));

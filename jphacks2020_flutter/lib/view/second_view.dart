@@ -11,10 +11,7 @@ import 'package:jphacks2020/model/api_client.dart';
 import '../model/models.dart';
 
 class SecondView extends StatefulWidget {
-  const SecondView(
-      {Key key,
-      @required this.presentation,
-      @required this.url})
+  const SecondView({Key key, @required this.presentation, @required this.url})
       : super(key: key);
 
   final Presentation presentation;
@@ -47,7 +44,7 @@ class _SecondViewState extends State<SecondView> {
             Navigator.pop(context);
           },
         ),
-        title: const Text('JPHacks2020'),
+        title: Text(widget.presentation.title),
         actions: <Widget>[
           SizedBox(
             width: 60,
@@ -254,7 +251,7 @@ class _SecondViewState extends State<SecondView> {
 
   Widget _alertDialog() {
     return AlertDialog(
-      title: const Text('全体を通しての感想を教えてね'),
+      title: const Text('感想'),
       content: SizedBox(
         height: 150,
         child: Column(
@@ -263,12 +260,13 @@ class _SecondViewState extends State<SecondView> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text('もっと知りたい'),
-                FlatButton(
-                  child: const Icon(Icons.favorite),
+                IconButton(
+                  icon: const Icon(Icons.favorite),
                   onPressed: () {
                     _impression('know_more');
                     Navigator.pop(context);
                   },
+                  splashColor: Colors.red,
                 ),
               ],
             ),
@@ -276,12 +274,13 @@ class _SecondViewState extends State<SecondView> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text('とても勉強になった'),
-                FlatButton(
-                  child: const Icon(Icons.favorite),
+                IconButton(
+                  icon: const Icon(Icons.favorite),
                   onPressed: () {
                     _impression('good');
                     Navigator.pop(context);
                   },
+                  splashColor: Colors.red,
                 ),
               ],
             ),
@@ -289,12 +288,13 @@ class _SecondViewState extends State<SecondView> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text('面白かった'),
-                FlatButton(
-                  child: const Icon(Icons.favorite),
+                IconButton(
+                  icon: const Icon(Icons.favorite),
                   onPressed: () {
                     _impression('interseting');
                     Navigator.pop(context);
                   },
+                  splashColor: Colors.red,
                 ),
               ],
             ),

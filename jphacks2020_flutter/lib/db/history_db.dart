@@ -16,8 +16,7 @@ class DBProvider {
   static const tableName = 'slide_history';
 
   Future<Database> get database async {
-      return _initDB();
-
+    return _initDB();
   }
 
   static Future<String> getDatabaseFilePath() async {
@@ -66,4 +65,3 @@ class DBProvider {
     await db.delete(tableName, where: 'url = ?', whereArgs: <String>[url]);
   }
 }
-
